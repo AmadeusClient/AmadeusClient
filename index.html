@@ -3,415 +3,872 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
-  <title>Amadeus Client — 次时代 Minecraft 实用客户端</title>
+  <title>Amadeus Client</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: 'HarmonyOS Sans SC';
-      src: url('HarmonyOS_Sans_SC_Bold.ttf') format('truetype');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
-
-    *, ::after, ::before { box-sizing: border-box; }
 
     :root {
-      --bg: #0B0A0F;
-      --surface: #14121A;
-      --card: #1C1924;
-      --border: #2A2733;
-      --text: #E6E0E9;
-      --muted: #B0A9B9;
-      --primary: #A78BFA;
-      --primary-glow: rgba(167, 139, 250, 0.3);
-      --secondary: #7C6F9E;
-      --accent: #D8B4FE;
-      --font: 'HarmonyOS Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --mono: 'JetBrains Mono', 'Cascadia Code', monospace;
+      --bg-deep: #05040A;
+      --bg-mid: #0B0914;
+      --bg-surface: #120F1E;
+      --bg-card: #1A162B;
+      --border-subtle: #2A2540;
+      --text-primary: #EFECF5;
+      --text-secondary: #B5ADCA;
+      --text-dim: #6A6080;
+      --accent-primary: #A78BFA;
+      --accent-secondary: #D8B4FE;
+      --accent-glow: rgba(167, 139, 250, 0.18);
+      --accent-glow-strong: rgba(167, 139, 250, 0.30);
+      --font-sans: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', 'Cascadia Code', monospace;
+      --perspective: 1000px;
+
+      --mx: 0;
+      --my: 0;
     }
 
-    html { scroll-behavior: smooth; }
+    html,
     body {
-      background: var(--bg);
-      font-family: var(--font);
-      color: var(--text);
-      margin: 0;
-      line-height: 1.6;
-      overflow-x: hidden;
+      height: 100%;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      overflow: hidden;
+      cursor: default;
     }
 
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: var(--surface); }
-    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 8px; }
+    .scroll-container {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      perspective: var(--perspective);
+      perspective-origin: 50% 50%;
+    }
 
-    nav {
-      position: fixed;
-      top: 0;
+    .scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .section {
+      height: 100vh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 40px;
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .section::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .section .bg-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+      transform-style: preserve-3d;
+    }
+
+    .section .bg-layer-1 {
+      transform: translate3d(calc(var(--mx) * 60px), calc(var(--my) * 60px), -120px) scale(1.3);
+      opacity: 0.35;
+      transition: transform 0.08s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .section .bg-layer-2 {
+      transform: translate3d(calc(var(--mx) * 30px), calc(var(--my) * 30px), -60px) scale(1.12);
+      opacity: 0.6;
+      transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .section .content {
+      position: relative;
+      z-index: 2;
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .section .content-parallax {
+      transform: translate3d(calc(var(--mx) * 15px), calc(var(--my) * 15px), 20px);
+      transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .section .title-parallax {
+      transform: translate3d(calc(var(--mx) * 8px), calc(var(--my) * 8px), 40px);
+      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .section .depth-divider {
+      position: absolute;
+      bottom: 0;
       left: 0;
       right: 0;
-      height: 64px;
-      z-index: 100;
-      background: rgba(11, 10, 15, 0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+      opacity: 0.5;
+      z-index: 1;
     }
-    nav .brand {
-      font-family: Syne, sans-serif;
+
+    .section:last-child .depth-divider {
+      display: none;
+    }
+
+    .section .animate {
+      opacity: 0;
+      transform: translateY(40px) scale(0.96);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
+    }
+
+    .section.active .animate {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .section.active .animate:nth-child(2) {
+      transition-delay: 0.06s;
+    }
+    .section.active .animate:nth-child(3) {
+      transition-delay: 0.12s;
+    }
+    .section.active .animate:nth-child(4) {
+      transition-delay: 0.18s;
+    }
+    .section.active .animate:nth-child(5) {
+      transition-delay: 0.24s;
+    }
+    .section.active .animate:nth-child(6) {
+      transition-delay: 0.30s;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.20em;
+      color: var(--accent-primary);
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: rgba(167, 139, 250, 0.07);
+      padding: 4px 20px;
+      border-radius: 40px;
+      border: 1px solid rgba(167, 139, 250, 0.10);
+      backdrop-filter: blur(4px);
+      user-select: none;
+    }
+
+    .title {
+      font-family: var(--font-sans);
       font-weight: 800;
-      font-size: 18px;
-      letter-spacing: .03em;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
+      font-size: clamp(2.6rem, 9vw, 4.8rem);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin-bottom: 14px;
+      text-shadow: 0 4px 60px rgba(167, 139, 250, 0.08);
+      user-select: none;
+    }
+
+    .title .hl {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      text-shadow: 0 0 80px rgba(167, 139, 250, 0.15);
     }
-    nav .links {
-      display: flex;
-      gap: 28px;
-      align-items: center;
-    }
-    nav .links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 14px;
-      transition: .2s;
-    }
-    nav .links a:hover { color: var(--text); }
-    nav .links .btn {
-      background: var(--primary);
-      color: #000;
-      padding: 6px 18px;
-      border-radius: 24px;
-      font-weight: 600;
-      font-size: 13px;
-      transition: .2s;
-    }
-    nav .links .btn:hover { background: var(--accent); color: #000; }
 
-    .hero {
-      padding: 120px 40px 80px;
-      text-align: center;
-      background: radial-gradient(ellipse at 50% 20%, var(--primary-glow), transparent 70%);
+    .sub {
+      font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto 30px;
+      line-height: 1.8;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      user-select: none;
     }
-    .hero h1 {
-      font-family: Syne, sans-serif;
-      font-weight: 800;
-      font-size: clamp(2.8rem, 8vw, 5rem);
-      letter-spacing: -.02em;
-      margin: 0 0 16px;
-    }
-    .hero h1 span { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .hero p {
-      font-size: 1.2rem;
-      color: var(--muted);
-      max-width: 640px;
-      margin: 0 auto 32px;
-    }
-    .hero .btns {
+
+    .btns {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       justify-content: center;
       flex-wrap: wrap;
+      user-select: none;
     }
-    .hero .btns a {
-      padding: 12px 32px;
-      border-radius: 40px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: .2s;
-      font-size: 15px;
-    }
-    .hero .btns .primary {
-      background: var(--primary);
-      color: #000;
-    }
-    .hero .btns .primary:hover { background: var(--accent); transform: scale(1.03); }
-    .hero .btns .secondary {
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-    .hero .btns .secondary:hover { background: var(--card); }
-    .hero .btns .docs {
-      border: 1px solid var(--primary);
-      color: var(--primary);
-    }
-    .hero .btns .docs:hover { background: var(--primary); color: #000; }
 
-    section {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 60px 40px;
-    }
-    section h2 {
-      font-family: Syne, sans-serif;
+    .btns a {
+      padding: 13px 36px;
+      border-radius: 60px;
       font-weight: 700;
-      font-size: 2rem;
-      margin: 0 0 8px;
-      letter-spacing: -.01em;
-    }
-    section .sub {
-      color: var(--muted);
-      font-size: 1.05rem;
-      margin-bottom: 40px;
-    }
-
-    .grid-2, .grid-3 {
-      display: grid;
-      gap: 24px;
-    }
-    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px 20px;
-      transition: .25s;
-    }
-    .card:hover { border-color: var(--primary); transform: translateY(-4px); }
-    .card .icon {
-      font-size: 32px;
-      color: var(--primary);
-      margin-bottom: 8px;
-    }
-    .card h3 {
-      font-size: 1.1rem;
-      margin: 0 0 6px;
-    }
-    .card p {
-      font-size: 0.95rem;
-      color: var(--muted);
-      margin: 0;
-    }
-
-    .badge-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 12px;
-      margin: 16px 0 0;
-    }
-    .badge-list span {
-      background: var(--surface);
-      padding: 4px 14px;
-      border-radius: 20px;
       font-size: 13px;
-      border: 1px solid var(--border);
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.02em;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .btns a::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 60px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .btns .primary {
+      background: var(--accent-primary);
+      color: #07060B;
+      box-shadow: 0 6px 40px var(--accent-glow);
+    }
+
+    .btns .primary:hover {
+      background: var(--accent-secondary);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 56px rgba(167, 139, 250, 0.35);
+    }
+
+    .btns .secondary {
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      background: rgba(18, 15, 30, 0.5);
+      backdrop-filter: blur(8px);
+    }
+
+    .btns .secondary:hover {
+      background: rgba(26, 22, 43, 0.8);
+      border-color: var(--accent-primary);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .btns .docs {
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      color: var(--accent-secondary);
+      background: rgba(167, 139, 250, 0.04);
+    }
+
+    .btns .docs:hover {
+      background: rgba(167, 139, 250, 0.10);
+      border-color: var(--accent-primary);
+      transform: translateY(-3px) scale(1.02);
     }
 
     .feature-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-top: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 8px;
+      width: 100%;
     }
-    .feature-item {
-      background: var(--surface);
-      padding: 14px 16px;
-      border-radius: 12px;
-      border-left: 3px solid var(--primary);
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 24px 18px 22px;
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: center;
+      backdrop-filter: blur(4px);
+      user-select: none;
     }
-    .feature-item strong { display: block; font-size: 1rem; }
-    .feature-item small { color: var(--muted); font-size: 0.9rem; }
+
+    .feature-card:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 56px rgba(0, 0, 0, 0.5), 0 0 40px rgba(167, 139, 250, 0.04);
+    }
+
+    .feature-card .icon {
+      font-size: 28px;
+      color: var(--accent-primary);
+      margin-bottom: 8px;
+      display: block;
+      opacity: 0.9;
+      filter: drop-shadow(0 4px 20px rgba(167, 139, 250, 0.10));
+      user-select: none;
+    }
+
+    .feature-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: 0.01em;
+      user-select: none;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.6;
+      font-weight: 400;
+      user-select: none;
+    }
+
+    .module-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 8px;
+      user-select: none;
+    }
+
+    .module-tags span {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 24px;
+      border-radius: 60px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: default;
+      letter-spacing: 0.02em;
+      color: var(--text-secondary);
+      user-select: none;
+    }
+
+    .module-tags span:hover {
+      border-color: var(--accent-primary);
+      background: rgba(167, 139, 250, 0.06);
+      color: var(--text-primary);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .module-tags .tag-combat {
+      border-left: 3px solid #f87171;
+    }
+    .module-tags .tag-movement {
+      border-left: 3px solid #34d399;
+    }
+    .module-tags .tag-player {
+      border-left: 3px solid #60a5fa;
+    }
+    .module-tags .tag-render {
+      border-left: 3px solid #c084fc;
+    }
+    .module-tags .tag-world {
+      border-left: 3px solid #fbbf24;
+    }
+    .module-tags .tag-misc {
+      border-left: 3px solid #f472b6;
+    }
 
     .code-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 20px;
-      font-family: var(--mono);
-      font-size: 0.9rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 20px 24px;
+      font-family: var(--font-mono);
+      font-size: 0.80rem;
       overflow-x: auto;
-      margin: 16px 0;
+      text-align: left;
+      margin: 6px auto 0;
+      max-width: 600px;
+      width: 100%;
+      line-height: 1.9;
+      box-shadow: inset 0 4px 40px rgba(0, 0, 0, 0.6), 0 8px 32px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(4px);
+      user-select: none;
     }
 
-    .callout {
-      background: rgba(167, 139, 250, 0.08);
-      border-left: 4px solid var(--primary);
-      padding: 14px 20px;
-      border-radius: 8px;
-      margin: 24px 0;
+    .code-block code {
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      user-select: none;
     }
-    .callout strong { color: var(--accent); }
 
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 40px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
+    .code-block .kw {
+      color: #c084fc;
     }
-    footer a { color: var(--primary); text-decoration: none; }
+    .code-block .fn {
+      color: #f472b6;
+    }
+    .code-block .str {
+      color: #34d399;
+    }
+    .code-block .cm {
+      color: #5F5670;
+      font-style: italic;
+    }
+    .code-block .num {
+      color: #fbbf24;
+    }
+    .code-block .type {
+      color: #60a5fa;
+    }
+
+    .nav-dots {
+      position: fixed;
+      right: 32px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 100;
+      user-select: none;
+    }
+
+    .nav-dots .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      border: none;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0;
+      user-select: none;
+    }
+
+    .nav-dots .dot.active {
+      background: var(--accent-primary);
+      box-shadow: 0 0 30px var(--accent-glow), 0 0 60px rgba(167, 139, 250, 0.08);
+      transform: scale(1.4);
+    }
+
+    .nav-dots .dot:hover {
+      background: var(--text-secondary);
+      transform: scale(1.2);
+    }
+
+    .nav-dots .dot.active:hover {
+      background: var(--accent-primary);
+      transform: scale(1.4);
+    }
+
+    .scroll-progress {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      z-index: 100;
+      width: 0%;
+      transition: width 0.12s linear;
+      box-shadow: 0 0 30px var(--accent-glow);
+      pointer-events: none;
+    }
+
+    .section:nth-child(1) .bg-layer-1 {
+      background: radial-gradient(ellipse 60% 35% at 50% 25%, var(--accent-glow-strong), transparent 70%);
+    }
+    .section:nth-child(1) .bg-layer-2 {
+      background: radial-gradient(ellipse 40% 25% at 30% 75%, rgba(167, 139, 250, 0.06), transparent 60%);
+    }
+
+    .section:nth-child(2) .bg-layer-1 {
+      background: radial-gradient(ellipse 45% 30% at 70% 20%, var(--accent-glow), transparent 65%);
+    }
+    .section:nth-child(2) .bg-layer-2 {
+      background: radial-gradient(ellipse 35% 25% at 20% 80%, rgba(216, 180, 254, 0.05), transparent 55%);
+    }
+
+    .section:nth-child(3) .bg-layer-1 {
+      background: radial-gradient(ellipse 50% 30% at 30% 50%, var(--accent-glow), transparent 65%);
+    }
+    .section:nth-child(3) .bg-layer-2 {
+      background: radial-gradient(ellipse 35% 20% at 75% 70%, rgba(167, 139, 250, 0.05), transparent 55%);
+    }
+
+    .section:nth-child(4) .bg-layer-1 {
+      background: radial-gradient(ellipse 45% 30% at 60% 30%, var(--accent-glow), transparent 65%);
+    }
+    .section:nth-child(4) .bg-layer-2 {
+      background: radial-gradient(ellipse 40% 25% at 25% 75%, rgba(216, 180, 254, 0.04), transparent 55%);
+    }
+
+    .section:nth-child(5) .bg-layer-1 {
+      background: radial-gradient(ellipse 55% 35% at 50% 55%, var(--accent-glow-strong), transparent 70%);
+    }
+    .section:nth-child(5) .bg-layer-2 {
+      background: radial-gradient(ellipse 30% 20% at 20% 30%, rgba(167, 139, 250, 0.06), transparent 50%);
+    }
 
     @media (max-width: 768px) {
-      nav { padding: 0 20px; }
-      nav .links { gap: 16px; }
-      nav .links a:not(.btn) { display: none; }
-      .hero { padding: 100px 20px 60px; }
-      section { padding: 40px 20px; }
+      .section {
+        padding: 40px 20px;
+      }
+      .feature-grid {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .nav-dots {
+        right: 16px;
+        gap: 10px;
+      }
+      .nav-dots .dot {
+        width: 8px;
+        height: 8px;
+      }
+      .code-block {
+        font-size: 0.68rem;
+        padding: 14px 16px;
+      }
+      .code-block code {
+        font-size: 0.66rem;
+      }
+      .btns a {
+        padding: 10px 24px;
+        font-size: 12px;
+      }
+      .module-tags span {
+        padding: 6px 16px;
+        font-size: 12px;
+      }
+      .module-tags {
+        gap: 8px;
+      }
+      .title {
+        font-size: clamp(2rem, 7vw, 3rem);
+      }
+      .section .bg-layer-1 {
+        transform: translate3d(calc(var(--mx) * 30px), calc(var(--my) * 30px), -80px) scale(1.2);
+      }
+      .section .bg-layer-2 {
+        transform: translate3d(calc(var(--mx) * 15px), calc(var(--my) * 15px), -40px) scale(1.06);
+      }
+      .section .content-parallax {
+        transform: translate3d(calc(var(--mx) * 8px), calc(var(--my) * 8px), 10px);
+      }
+      .section .title-parallax {
+        transform: translate3d(calc(var(--mx) * 4px), calc(var(--my) * 4px), 20px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .feature-grid {
+        max-width: 260px;
+      }
+      .code-block {
+        font-size: 0.60rem;
+        padding: 12px 14px;
+      }
+      .code-block code {
+        font-size: 0.58rem;
+      }
+      .section {
+        padding: 30px 16px;
+      }
+      .section .bg-layer-1 {
+        transform: translate3d(calc(var(--mx) * 20px), calc(var(--my) * 20px), -60px) scale(1.15);
+      }
+      .section .bg-layer-2 {
+        transform: translate3d(calc(var(--mx) * 10px), calc(var(--my) * 10px), -30px) scale(1.04);
+      }
+      .section .content-parallax {
+        transform: translate3d(calc(var(--mx) * 6px), calc(var(--my) * 6px), 8px);
+      }
+      .section .title-parallax {
+        transform: translate3d(calc(var(--mx) * 3px), calc(var(--my) * 3px), 16px);
+      }
     }
   </style>
 </head>
 <body>
 
-<nav>
-  <span class="brand">AMADEUS</span>
-  <div class="links">
-    <a href="#features">功能</a>
-    <a href="#modules">模块</a>
-    <a href="#scripts">脚本</a>
-    <a href="#hud">HUD</a>
-    <a href="api.html">文档</a>
-    <a href="#download" class="btn">下载</a>
+  <div class="nav-dots" id="navDots">
+    <button class="dot active" data-index="0"></button>
+    <button class="dot" data-index="1"></button>
+    <button class="dot" data-index="2"></button>
+    <button class="dot" data-index="3"></button>
+    <button class="dot" data-index="4"></button>
   </div>
-</nav>
 
-<div class="hero">
-  <h1><span>Amadeus</span> Client</h1>
-  <p>为 PVP 与实用功能而生的高性能 Minecraft 客户端，模块化架构、脚本扩展、极致可定制。</p>
-  <div class="btns">
-    <a href="#download" class="primary">立即下载</a>
-    <a href="api.html" class="docs">📖 查看文档</a>
-    <a href="#features" class="secondary">了解更多</a>
-  </div>
-</div>
+  <div class="scroll-progress" id="scrollProgress"></div>
 
-<section id="features">
-  <h2>核心特性</h2>
-  <div class="sub">专为现代 Minecraft 打造的轻量级客户端</div>
-  <div class="grid-3">
-    <div class="card">
-      <div class="icon material-symbols-outlined">bolt</div>
-      <h3>极致性能</h3>
-      <p>ASM 字节码优化，极低资源占用，流畅运行于低配设备。</p>
-    </div>
-    <div class="card">
-      <div class="icon material-symbols-outlined">extension</div>
-      <h3>模块化设计</h3>
-      <p>60+ 独立模块，按需开关，互不干扰，自由组合。</p>
-    </div>
-    <div class="card">
-      <div class="icon material-symbols-outlined">code</div>
-      <h3>脚本扩展</h3>
-      <p>内置 GraalJS 引擎，热重载，无需重启即可编写调试 JavaScript。</p>
-    </div>
-    <div class="card">
-      <div class="icon material-symbols-outlined">palette</div>
-      <h3>动态 HUD</h3>
-      <p>拖拽式布局，自由调整位置、颜色、字体，完全自定义。</p>
-    </div>
-    <div class="card">
-      <div class="icon material-symbols-outlined">settings</div>
-      <h3>丰富设置</h3>
-      <p>每个模块拥有独立设置面板，数字、布尔、模式、颜色等控件。</p>
-    </div>
-    <div class="card">
-      <div class="icon material-symbols-outlined">security</div>
-      <h3>安全稳定</h3>
-      <p>严格的脚本沙箱，上下文隔离，不影响游戏稳定性。</p>
-    </div>
-  </div>
-</section>
+  <div class="scroll-container" id="scrollContainer">
 
-<section id="modules">
-  <h2>模块分类</h2>
-  <div class="sub">六大类别，覆盖所有实用场景</div>
-  <div class="feature-grid">
-    <div class="feature-item"><strong>⚔️ COMBAT</strong><small>战斗辅助：KillAura, AutoClicker, Velocity…</small></div>
-    <div class="feature-item"><strong>🏃 MOVEMENT</strong><small>移动增强：Speed, Flight, Sprint, SafeWalk…</small></div>
-    <div class="feature-item"><strong>🧑 PLAYER</strong><small>玩家功能：AutoEat, Scaffold, NoFall…</small></div>
-    <div class="feature-item"><strong>🎨 RENDER</strong><small>渲染增强：ESP, XRay, FullBright, Tracers…</small></div>
-    <div class="feature-item"><strong>🌍 WORLD</strong><small>世界交互：AutoFish, Nuker, AntiRain…</small></div>
-    <div class="feature-item"><strong>🧩 MISC</strong><small>杂项工具：ChatLog, Timer, MiddleClick…</small></div>
-  </div>
-</section>
-
-<section id="scripts">
-  <h2>脚本系统</h2>
-  <div class="sub">用 JavaScript 实现你的自定义功能</div>
-  <div class="grid-2">
-    <div>
-      <p style="color: var(--muted);">基于 GraalVM GraalJS，支持 ECMAScript 2024，所有核心类预绑定，开箱即用。</p>
-      <div class="badge-list">
-        <span>📁 ~/.zen/liquidres/scripts/</span>
-        <span>🔄 热重载</span>
-        <span>📦 35+ 事件钩子</span>
-        <span>🧩 设置项支持</span>
+    <section class="section" data-index="0">
+      <div class="bg-layer bg-layer-1"></div>
+      <div class="bg-layer bg-layer-2"></div>
+      <div class="depth-divider"></div>
+      <div class="content content-parallax">
+        <div class="animate tag">次时代客户端</div>
+        <h1 class="animate title title-parallax"><span class="hl">Amadeus</span></h1>
+        <p class="animate sub">为 PVP 与实用功能而生的高性能 Minecraft 客户端。模块化架构 · 脚本扩展 · 极致可定制。</p>
+        <div class="animate btns">
+          <a href="https://github.com/AmadeusClient/AmadeusClient" class="primary">GitHub</a>
+          <a href="api.html" class="docs">脚本文档</a>
+          <a href="#" class="secondary" onclick="navigator.clipboard?.writeText('617996394');alert('QQ群号已复制：617996394')">QQ群 617996394</a>
+        </div>
       </div>
-      <div class="callout">
-        <strong>示例脚本：</strong> 按 F6 在聊天栏发送问候
-      </div>
-    </div>
-    <div>
-      <div class="code-block">
-<pre style="margin:0;color:var(--text);font-family:var(--mono);font-size:0.85rem;">
-<span style="color:#c084fc;">var</span> mod = <span style="color:#f472b6;">createModule</span>(<span style="color:#34d399;">"Greeter"</span>, Category.MISC, {
-  onKey: <span style="color:#c084fc;">function</span>(e) {
-    <span style="color:#c084fc;">if</span> (e.isPressed() && e.getKeyCode() == 295)
-      printChat(<span style="color:#34d399;">"§aHello from script!"</span>);
-  }
-});
-mod.setKey(295); <span style="color:#6b7280;">// F6</span>
-</pre>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section id="hud">
-  <h2>HUD 系统</h2>
-  <div class="sub">完全可拖拽，自由定制</div>
-  <div class="grid-2">
-    <div class="card">
-      <h3>内置元素</h3>
-      <ul style="color:var(--muted);padding-left:20px;">
-        <li>FPS / Ping</li>
-        <li>坐标 (XYZ)</li>
-        <li>方向指示</li>
-        <li>CPS 计数器</li>
-        <li>目标信息</li>
-        <li>模块状态列表</li>
-        <li>水印 &amp; 内存</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>自定义选项</h3>
-      <p style="color:var(--muted);">每个元素支持独立设置字体、颜色、背景、边框、阴影。使用 <code>.hud</code> 命令进入编辑模式，拖动即调整位置。</p>
-      <div class="badge-list">
-        <span>⌨ Ctrl+H 快速编辑</span>
-        <span>🎨 颜色拾取</span>
-        <span>📐 位置微调</span>
+    <section class="section" data-index="1">
+      <div class="bg-layer bg-layer-1"></div>
+      <div class="bg-layer bg-layer-2"></div>
+      <div class="depth-divider"></div>
+      <div class="content content-parallax">
+        <div class="animate tag">核心能力</div>
+        <h2 class="animate title title-parallax" style="font-size:clamp(1.8rem,5vw,2.8rem);">三大特性</h2>
+        <div class="feature-grid">
+          <div class="animate feature-card">
+            <span class="icon">⚡</span>
+            <h4>极致性能</h4>
+            <p>ASM 字节码优化，极低资源占用</p>
+          </div>
+          <div class="animate feature-card" style="transition-delay:0.08s;">
+            <span class="icon">◆</span>
+            <h4>模块化</h4>
+            <p>60+ 独立模块，按需开关</p>
+          </div>
+          <div class="animate feature-card" style="transition-delay:0.16s;">
+            <span class="icon">◈</span>
+            <h4>脚本扩展</h4>
+            <p>GraalJS 引擎，热重载</p>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section id="download" style="text-align:center;">
-  <h2>开始使用</h2>
-  <div class="sub">下载 Amadeus，体验前所未有的控制力</div>
-  <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:20px;">
-    <a href="#" style="background:var(--primary);color:#000;padding:14px 48px;border-radius:40px;font-weight:600;text-decoration:none;font-size:1.1rem;">下载客户端</a>
-    <a href="#" style="border:1px solid var(--border);color:var(--text);padding:14px 48px;border-radius:40px;text-decoration:none;font-size:1.1rem;">GitHub</a>
-    <a href="api.html" style="border:1px solid var(--primary);color:var(--primary);padding:14px 48px;border-radius:40px;text-decoration:none;font-size:1.1rem;">📖 API 文档</a>
-  </div>
-  <div style="margin-top:24px;color:var(--muted);font-size:0.9rem;">
-    支持 Minecraft 1.20.4 · Forge / Fabric · Java 17+
-  </div>
-</section>
+    <section class="section" data-index="2">
+      <div class="bg-layer bg-layer-1"></div>
+      <div class="bg-layer bg-layer-2"></div>
+      <div class="depth-divider"></div>
+      <div class="content content-parallax">
+        <div class="animate tag">六大类别</div>
+        <h2 class="animate title title-parallax" style="font-size:clamp(1.6rem,4vw,2.6rem);">模块分类</h2>
+        <p class="animate sub" style="max-width:480px;">覆盖所有实用场景，自由组合</p>
+        <div class="animate module-tags">
+          <span class="tag-combat">COMBAT</span>
+          <span class="tag-movement">MOVEMENT</span>
+          <span class="tag-player">PLAYER</span>
+          <span class="tag-render">RENDER</span>
+          <span class="tag-world">WORLD</span>
+          <span class="tag-misc">MISC</span>
+        </div>
+      </div>
+    </section>
 
-<footer>
-  &copy; 2026 Amadeus Client · 持续更新 ·
-  <a href="api.html">脚本 API 文档</a>
-</footer>
+    <section class="section" data-index="3">
+      <div class="bg-layer bg-layer-1"></div>
+      <div class="bg-layer bg-layer-2"></div>
+      <div class="depth-divider"></div>
+      <div class="content content-parallax">
+        <div class="animate tag">脚本系统</div>
+        <h2 class="animate title title-parallax" style="font-size:clamp(1.6rem,4vw,2.6rem);">用 JavaScript 扩展</h2>
+        <p class="animate sub" style="max-width:440px;">所有核心类预绑定，开箱即用</p>
+        <div class="animate code-block">
+          <code>
+            <span class="kw">var</span> mod = <span class="fn">createModule</span>(<span class="str">"Greeter"</span>, <span class="type">Category</span>.MISC, {<br>
+            &nbsp;&nbsp;<span class="fn">onKey</span>: <span class="kw">function</span>(e) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (e.isPressed() && e.getKeyCode() == <span class="num">295</span>)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">printChat</span>(<span class="str">"§aHello!"</span>);<br>
+            &nbsp;&nbsp;}<br>
+            });<br>
+            mod.<span class="fn">setKey</span>(<span class="num">295</span>); <span class="cm">// F6</span>
+          </code>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-index="4">
+      <div class="bg-layer bg-layer-1"></div>
+      <div class="bg-layer bg-layer-2"></div>
+      <div class="content content-parallax">
+        <div class="animate tag">开始使用</div>
+        <h2 class="animate title title-parallax" style="font-size:clamp(2rem,5vw,3.2rem);">立即体验</h2>
+        <p class="animate sub" style="max-width:420px;">下载 Amadeus，解锁前所未有的控制力</p>
+        <div class="animate btns">
+          <a href="https://github.com/AmadeusClient/AmadeusClient" class="primary">GitHub</a>
+          <a href="#" class="secondary" onclick="navigator.clipboard?.writeText('617996394');alert('QQ群号已复制：617996394')">QQ群 617996394</a>
+          <a href="api.html" class="docs">API 文档</a>
+        </div>
+        <div class="animate" style="margin-top:24px;font-size:12px;color:var(--text-dim);letter-spacing:0.04em;user-select:none;">
+          支持 Minecraft 1.20.4 · Forge / Fabric · Java 17+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    (function() {
+      var container = document.getElementById('scrollContainer');
+      var sections = document.querySelectorAll('.section');
+      var dots = document.querySelectorAll('.dot');
+      var progress = document.getElementById('scrollProgress');
+      var currentIndex = 0;
+      var isScrolling = false;
+      var scrollTimeout = null;
+      var ticking = false;
+
+      var root = document.documentElement;
+      var mx = 0,
+        my = 0;
+      var targetMx = 0,
+        targetMy = 0;
+
+      function updateActive(index) {
+        if (index === currentIndex && document.querySelector('.section.active')) return;
+        currentIndex = index;
+        sections.forEach(function(el, i) {
+          el.classList.toggle('active', i === index);
+        });
+        dots.forEach(function(dot, i) {
+          dot.classList.toggle('active', i === index);
+        });
+        var pct = (index / (sections.length - 1)) * 100;
+        progress.style.width = pct + '%';
+      }
+
+      function goTo(index) {
+        if (index < 0) index = 0;
+        if (index >= sections.length) index = sections.length - 1;
+        if (index === currentIndex) {
+          updateActive(index);
+          return;
+        }
+        var target = sections[index];
+        if (target) {
+          isScrolling = true;
+          target.scrollIntoView({ behavior: 'smooth' });
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(function() {
+            isScrolling = false;
+            updateActive(index);
+          }, 650);
+        }
+      }
+
+      function handleScroll() {
+        if (isScrolling) return;
+        var scrollTop = container.scrollTop;
+        var heights = [];
+        sections.forEach(function(el) {
+          heights.push(el.offsetHeight);
+        });
+        var accumulated = 0;
+        var idx = 0;
+        for (var i = 0; i < heights.length; i++) {
+          var mid = accumulated + heights[i] / 2;
+          if (scrollTop < mid) {
+            idx = i;
+            break;
+          }
+          accumulated += heights[i];
+          idx = i;
+        }
+        if (idx !== currentIndex) {
+          updateActive(idx);
+        }
+      }
+
+      container.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(function() {
+            handleScroll();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+
+      dots.forEach(function(dot, i) {
+        dot.addEventListener('click', function() {
+          goTo(i);
+        });
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          goTo(currentIndex + 1);
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          goTo(currentIndex - 1);
+        }
+      });
+
+      document.addEventListener('mousemove', function(e) {
+        var x = (e.clientX / window.innerWidth) * 2 - 1;
+        var y = (e.clientY / window.innerHeight) * 2 - 1;
+        targetMx = x;
+        targetMy = y;
+      });
+
+      function smoothParallax() {
+        mx += (targetMx - mx) * 0.10;
+        my += (targetMy - my) * 0.10;
+        root.style.setProperty('--mx', mx);
+        root.style.setProperty('--my', my);
+        requestAnimationFrame(smoothParallax);
+      }
+
+      requestAnimationFrame(function() {
+        updateActive(0);
+        if (window.location.hash) {
+          var hash = window.location.hash.slice(1);
+          var el = document.getElementById(hash);
+          if (el) {
+            var idx = Array.prototype.indexOf.call(sections, el);
+            if (idx > 0) {
+              setTimeout(function() { goTo(idx); }, 120);
+            }
+          }
+        }
+      });
+
+      smoothParallax();
+
+      var resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+          var target = sections[currentIndex];
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 200);
+      });
+
+      window.__amadeus = { goTo: goTo, currentIndex: function() { return currentIndex; } };
+
+    })();
+  </script>
 
 </body>
 </html>
