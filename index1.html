@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
+  <title>Amadeus Client — 次时代 Minecraft 实用客户端</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'HarmonyOS Sans SC';
+      src: url('HarmonyOS_Sans_SC_Bold.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    *, ::after, ::before { box-sizing: border-box; }
+
+    :root {
+      --bg: #0B0A0F;
+      --surface: #14121A;
+      --card: #1C1924;
+      --border: #2A2733;
+      --text: #E6E0E9;
+      --muted: #B0A9B9;
+      --primary: #A78BFA;
+      --primary-glow: rgba(167, 139, 250, 0.3);
+      --secondary: #7C6F9E;
+      --accent: #D8B4FE;
+      --font: 'HarmonyOS Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'JetBrains Mono', 'Cascadia Code', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      font-family: var(--font);
+      color: var(--text);
+      margin: 0;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 8px; }
+
+    /* ── nav ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      z-index: 100;
+      background: rgba(11, 10, 15, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+    }
+    nav .brand {
+      font-family: Syne, sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: .03em;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    nav .links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    nav .links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: .2s;
+    }
+    nav .links a:hover { color: var(--text); }
+    nav .links .btn {
+      background: var(--primary);
+      color: #000;
+      padding: 6px 18px;
+      border-radius: 24px;
+      font-weight: 600;
+      font-size: 13px;
+      transition: .2s;
+    }
+    nav .links .btn:hover { background: var(--accent); color: #000; }
+
+    /* ── hero ── */
+    .hero {
+      padding: 120px 40px 80px;
+      text-align: center;
+      background: radial-gradient(ellipse at 50% 20%, var(--primary-glow), transparent 70%);
+    }
+    .hero h1 {
+      font-family: Syne, sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      letter-spacing: -.02em;
+      margin: 0 0 16px;
+    }
+    .hero h1 span { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto 32px;
+    }
+    .hero .btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero .btns a {
+      padding: 12px 32px;
+      border-radius: 40px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: .2s;
+      font-size: 15px;
+    }
+    .hero .btns .primary {
+      background: var(--primary);
+      color: #000;
+    }
+    .hero .btns .primary:hover { background: var(--accent); transform: scale(1.03); }
+    .hero .btns .secondary {
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .hero .btns .secondary:hover { background: var(--card); }
+
+    /* ── sections ── */
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+    section h2 {
+      font-family: Syne, sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+      margin: 0 0 8px;
+      letter-spacing: -.01em;
+    }
+    section .sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 40px;
+    }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 24px;
+    }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 20px;
+      transition: .25s;
+    }
+    .card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .card .icon {
+      font-size: 32px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      margin: 0 0 6px;
+    }
+    .card p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin: 16px 0 0;
+    }
+    .badge-list span {
+      background: var(--surface);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .feature-item {
+      background: var(--surface);
+      padding: 14px 16px;
+      border-radius: 12px;
+      border-left: 3px solid var(--primary);
+    }
+    .feature-item strong { display: block; font-size: 1rem; }
+    .feature-item small { color: var(--muted); font-size: 0.9rem; }
+
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    .callout {
+      background: rgba(167, 139, 250, 0.08);
+      border-left: 4px solid var(--primary);
+      padding: 14px 20px;
+      border-radius: 8px;
+      margin: 24px 0;
+    }
+    .callout strong { color: var(--accent); }
+
+    /* ── footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── responsive ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      nav .links { gap: 16px; }
+      nav .links a:not(.btn) { display: none; }
+      .hero { padding: 100px 20px 60px; }
+      section { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">AMADEUS</span>
+  <div class="links">
+    <a href="#features">功能</a>
+    <a href="#modules">模块</a>
+    <a href="#scripts">脚本</a>
+    <a href="#hud">HUD</a>
+    <a href="#download" class="btn">下载</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <h1><span>Amadeus</span> Client</h1>
+  <p>为 PVP 与实用功能而生的高性能 Minecraft 客户端，模块化架构、脚本扩展、极致可定制。</p>
+  <div class="btns">
+    <a href="#download" class="primary">立即下载</a>
+    <a href="#features" class="secondary">了解更多</a>
+  </div>
+</div>
+
+<!-- 功能特性 -->
+<section id="features">
+  <h2>核心特性</h2>
+  <div class="sub">专为现代 Minecraft 打造的轻量级客户端</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="icon material-symbols-outlined">bolt</div>
+      <h3>极致性能</h3>
+      <p>ASM 字节码优化，极低资源占用，流畅运行于低配设备。</p>
+    </div>
+    <div class="card">
+      <div class="icon material-symbols-outlined">extension</div>
+      <h3>模块化设计</h3>
+      <p>60+ 独立模块，按需开关，互不干扰，自由组合。</p>
+    </div>
+    <div class="card">
+      <div class="icon material-symbols-outlined">code</div>
+      <h3>脚本扩展</h3>
+      <p>内置 GraalJS 引擎，热重载，无需重启即可编写调试 JavaScript。</p>
+    </div>
+    <div class="card">
+      <div class="icon material-symbols-outlined">palette</div>
+      <h3>动态 HUD</h3>
+      <p>拖拽式布局，自由调整位置、颜色、字体，完全自定义。</p>
+    </div>
+    <div class="card">
+      <div class="icon material-symbols-outlined">settings</div>
+      <h3>丰富设置</h3>
+      <p>每个模块拥有独立设置面板，数字、布尔、模式、颜色等控件。</p>
+    </div>
+    <div class="card">
+      <div class="icon material-symbols-outlined">security</div>
+      <h3>安全稳定</h3>
+      <p>严格的脚本沙箱，上下文隔离，不影响游戏稳定性。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 模块分类 -->
+<section id="modules">
+  <h2>模块分类</h2>
+  <div class="sub">六大类别，覆盖所有实用场景</div>
+  <div class="feature-grid">
+    <div class="feature-item"><strong>⚔️ COMBAT</strong><small>战斗辅助：KillAura, AutoClicker, Velocity…</small></div>
+    <div class="feature-item"><strong>🏃 MOVEMENT</strong><small>移动增强：Speed, Flight, Sprint, SafeWalk…</small></div>
+    <div class="feature-item"><strong>🧑 PLAYER</strong><small>玩家功能：AutoEat, Scaffold, NoFall…</small></div>
+    <div class="feature-item"><strong>🎨 RENDER</strong><small>渲染增强：ESP, XRay, FullBright, Tracers…</small></div>
+    <div class="feature-item"><strong>🌍 WORLD</strong><small>世界交互：AutoFish, Nuker, AntiRain…</small></div>
+    <div class="feature-item"><strong>🧩 MISC</strong><small>杂项工具：ChatLog, Timer, MiddleClick…</small></div>
+  </div>
+</section>
+
+<!-- 脚本系统 -->
+<section id="scripts">
+  <h2>脚本系统</h2>
+  <div class="sub">用 JavaScript 实现你的自定义功能</div>
+  <div class="grid-2">
+    <div>
+      <p style="color: var(--muted);">基于 GraalVM GraalJS，支持 ECMAScript 2024，所有核心类预绑定，开箱即用。</p>
+      <div class="badge-list">
+        <span>📁 ~/.zen/liquidres/scripts/</span>
+        <span>🔄 热重载</span>
+        <span>📦 35+ 事件钩子</span>
+        <span>🧩 设置项支持</span>
+      </div>
+      <div class="callout">
+        <strong>示例脚本：</strong> 按 F6 在聊天栏发送问候
+      </div>
+    </div>
+    <div>
+      <div class="code-block">
+<pre style="margin:0;color:var(--text);font-family:var(--mono);font-size:0.85rem;">
+<span style="color:#c084fc;">var</span> mod = <span style="color:#f472b6;">createModule</span>(<span style="color:#34d399;">"Greeter"</span>, Category.MISC, {
+  onKey: <span style="color:#c084fc;">function</span>(e) {
+    <span style="color:#c084fc;">if</span> (e.isPressed() && e.getKeyCode() == 295)
+      printChat(<span style="color:#34d399;">"§aHello from script!"</span>);
+  }
+});
+mod.setKey(295); <span style="color:#6b7280;">// F6</span>
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HUD -->
+<section id="hud">
+  <h2>HUD 系统</h2>
+  <div class="sub">完全可拖拽，自由定制</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>内置元素</h3>
+      <ul style="color:var(--muted);padding-left:20px;">
+        <li>FPS / Ping</li>
+        <li>坐标 (XYZ)</li>
+        <li>方向指示</li>
+        <li>CPS 计数器</li>
+        <li>目标信息</li>
+        <li>模块状态列表</li>
+        <li>水印 &amp; 内存</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>自定义选项</h3>
+      <p style="color:var(--muted);">每个元素支持独立设置字体、颜色、背景、边框、阴影。使用 <code>.hud</code> 命令进入编辑模式，拖动即调整位置。</p>
+      <div class="badge-list">
+        <span>⌨ Ctrl+H 快速编辑</span>
+        <span>🎨 颜色拾取</span>
+        <span>📐 位置微调</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 命令 & 下载 -->
+<section id="download" style="text-align:center;">
+  <h2>开始使用</h2>
+  <div class="sub">下载 Amadeus，体验前所未有的控制力</div>
+  <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:20px;">
+    <a href="#" style="background:var(--primary);color:#000;padding:14px 48px;border-radius:40px;font-weight:600;text-decoration:none;font-size:1.1rem;">下载客户端</a>
+    <a href="#" style="border:1px solid var(--border);color:var(--text);padding:14px 48px;border-radius:40px;text-decoration:none;font-size:1.1rem;">GitHub</a>
+  </div>
+  <div style="margin-top:24px;color:var(--muted);font-size:0.9rem;">
+    支持 Minecraft 1.20.4 · Forge / Fabric · Java 17+
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 Amadeus Client · 持续更新 · 所有内容以实际版本为准
+</footer>
+
+</body>
+</html>
