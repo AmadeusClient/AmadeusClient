@@ -44,12 +44,10 @@
       overflow-x: hidden;
     }
 
-    /* ── scrollbar ── */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: var(--surface); }
     ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 8px; }
 
-    /* ── nav ── */
     nav {
       position: fixed;
       top: 0;
@@ -99,7 +97,6 @@
     }
     nav .links .btn:hover { background: var(--accent); color: #000; }
 
-    /* ── hero ── */
     .hero {
       padding: 120px 40px 80px;
       text-align: center;
@@ -143,8 +140,12 @@
       color: var(--text);
     }
     .hero .btns .secondary:hover { background: var(--card); }
+    .hero .btns .docs {
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+    .hero .btns .docs:hover { background: var(--primary); color: #000; }
 
-    /* ── sections ── */
     section {
       max-width: 1200px;
       margin: 0 auto;
@@ -242,7 +243,6 @@
     }
     .callout strong { color: var(--accent); }
 
-    /* ── footer ── */
     footer {
       border-top: 1px solid var(--border);
       padding: 32px 40px;
@@ -250,8 +250,8 @@
       color: var(--muted);
       font-size: 0.9rem;
     }
+    footer a { color: var(--primary); text-decoration: none; }
 
-    /* ── responsive ── */
     @media (max-width: 768px) {
       nav { padding: 0 20px; }
       nav .links { gap: 16px; }
@@ -270,21 +270,21 @@
     <a href="#modules">模块</a>
     <a href="#scripts">脚本</a>
     <a href="#hud">HUD</a>
+    <a href="api.html">文档</a>
     <a href="#download" class="btn">下载</a>
   </div>
 </nav>
 
-<!-- Hero -->
 <div class="hero">
   <h1><span>Amadeus</span> Client</h1>
   <p>为 PVP 与实用功能而生的高性能 Minecraft 客户端，模块化架构、脚本扩展、极致可定制。</p>
   <div class="btns">
     <a href="#download" class="primary">立即下载</a>
+    <a href="api.html" class="docs">📖 查看文档</a>
     <a href="#features" class="secondary">了解更多</a>
   </div>
 </div>
 
-<!-- 功能特性 -->
 <section id="features">
   <h2>核心特性</h2>
   <div class="sub">专为现代 Minecraft 打造的轻量级客户端</div>
@@ -322,7 +322,6 @@
   </div>
 </section>
 
-<!-- 模块分类 -->
 <section id="modules">
   <h2>模块分类</h2>
   <div class="sub">六大类别，覆盖所有实用场景</div>
@@ -336,7 +335,6 @@
   </div>
 </section>
 
-<!-- 脚本系统 -->
 <section id="scripts">
   <h2>脚本系统</h2>
   <div class="sub">用 JavaScript 实现你的自定义功能</div>
@@ -369,7 +367,6 @@ mod.setKey(295); <span style="color:#6b7280;">// F6</span>
   </div>
 </section>
 
-<!-- HUD -->
 <section id="hud">
   <h2>HUD 系统</h2>
   <div class="sub">完全可拖拽，自由定制</div>
@@ -398,13 +395,13 @@ mod.setKey(295); <span style="color:#6b7280;">// F6</span>
   </div>
 </section>
 
-<!-- 命令 & 下载 -->
 <section id="download" style="text-align:center;">
   <h2>开始使用</h2>
   <div class="sub">下载 Amadeus，体验前所未有的控制力</div>
   <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:20px;">
     <a href="#" style="background:var(--primary);color:#000;padding:14px 48px;border-radius:40px;font-weight:600;text-decoration:none;font-size:1.1rem;">下载客户端</a>
     <a href="#" style="border:1px solid var(--border);color:var(--text);padding:14px 48px;border-radius:40px;text-decoration:none;font-size:1.1rem;">GitHub</a>
+    <a href="api.html" style="border:1px solid var(--primary);color:var(--primary);padding:14px 48px;border-radius:40px;text-decoration:none;font-size:1.1rem;">📖 API 文档</a>
   </div>
   <div style="margin-top:24px;color:var(--muted);font-size:0.9rem;">
     支持 Minecraft 1.20.4 · Forge / Fabric · Java 17+
@@ -412,7 +409,8 @@ mod.setKey(295); <span style="color:#6b7280;">// F6</span>
 </section>
 
 <footer>
-  &copy; 2026 Amadeus Client · 持续更新 · 所有内容以实际版本为准
+  &copy; 2026 Amadeus Client · 持续更新 ·
+  <a href="api.html">脚本 API 文档</a>
 </footer>
 
 </body>
