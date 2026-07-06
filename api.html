@@ -4,1247 +4,801 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
   <title>Amadeus 脚本系统 API 参考</title>
-  <link rel="icon" type="image/png" href="icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+    @font-face {
+      font-family: 'HarmonyOS Sans SC';
+      src: url('HarmonyOS_Sans_SC_Bold.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
     }
+
+    *, ::after, ::before { box-sizing: border-box; }
 
     :root {
-      --bg-deep: #05040A;
-      --bg-mid: #0B0914;
-      --bg-surface: #100E1A;
-      --bg-card: #18142A;
-      --bg-hover: #221E38;
-      --border-subtle: #2A2540;
-      --border-light: #3A3450;
-      --text-primary: #EFECF5;
-      --text-secondary: #B5ADCA;
-      --text-dim: #6A6080;
-      --accent-primary: #A78BFA;
-      --accent-secondary: #D8B4FE;
-      --accent-glow: rgba(167, 139, 250, 0.15);
-      --accent-glow-strong: rgba(167, 139, 250, 0.25);
-      --font-sans: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --font-mono: 'JetBrains Mono', 'Cascadia Code', monospace;
-
-      --mx: 0;
-      --my: 0;
+      --md-primary: #D0BCFF; --md-on-primary: #381E72;
+      --md-primary-container: #4F378B; --md-on-primary-container: #EADDFF;
+      --md-secondary: #CCC2DC; --md-on-secondary: #332D41;
+      --md-secondary-container: #4A4458; --md-on-secondary-container: #E8DEF8;
+      --md-tertiary: #EFB8C8; --md-on-tertiary: #492532;
+      --md-error: #F2B8B5; --md-on-error: #601410;
+      --md-surface: #141218; --md-surface-dim: #1E1B24;
+      --md-surface-container: #201E27;
+      --md-surface-container-high: #2B2933;
+      --md-surface-container-low: #1A1821;
+      --md-surface-container-lowest: #0F0D13;
+      --md-on-surface: #E6E0E9; --md-on-surface-variant: #CAC4D0;
+      --md-outline: #938F99; --md-outline-variant: #49454F;
+      --md-shadow: rgba(0,0,0,.6);
+      --md-font-family: 'HarmonyOS Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --md-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+      --md-shape-small: 8px;
+      --md-shape-medium: 12px;
+      --md-shape-large: 16px;
+      --accent: #D0BCFF; --accent2: #CCC2DC;
+      --bg: #141218; --surface: #201E27; --panel: #2B2933; --card: #201E27;
+      --border: #49454F; --text: #E6E0E9; --muted: #CAC4D0; --faint: #49454F;
+      --success: #34d399; --warning: #fbbf24; --danger: #F2B8B5;
+      --code-bg: #1a1821;
     }
 
-    html,
+    html { scroll-behavior: smooth; }
     body {
-      height: 100%;
-      background: var(--bg-deep);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      overflow: hidden;
-      cursor: default;
-    }
-
-    .app {
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    /* ===== 侧边栏 ===== */
-    .sidebar {
-      width: 270px;
-      min-width: 270px;
-      height: 100vh;
-      overflow-y: auto;
-      overflow-x: hidden;
-      background: var(--bg-surface);
-      border-right: 1px solid var(--border-subtle);
-      padding: 20px 12px 40px;
-      flex-shrink: 0;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-subtle) transparent;
-      position: relative;
-      z-index: 10;
-    }
-
-    .sidebar::-webkit-scrollbar {
-      width: 3px;
-    }
-    .sidebar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .sidebar::-webkit-scrollbar-thumb {
-      background: var(--border-subtle);
-      border-radius: 4px;
-    }
-
-    .sidebar .brand {
-      font-family: var(--font-sans);
-      font-weight: 800;
-      font-size: 18px;
-      letter-spacing: 0.02em;
-      padding: 8px 12px 16px;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .sidebar .brand .hl {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .sidebar .brand .ver {
-      font-size: 9px;
-      color: var(--text-dim);
-      font-weight: 400;
-      letter-spacing: 0.06em;
-      background: var(--bg-deep);
-      padding: 2px 10px;
-      border-radius: 20px;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .sidebar .nav-section {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--text-dim);
-      font-weight: 700;
-      padding: 14px 12px 4px;
-    }
-
-    .sidebar .nav-link {
-      display: block;
-      padding: 5px 12px;
-      font-size: 12.5px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border-radius: 6px;
-      transition: all 0.2s ease;
-      font-weight: 400;
-      position: relative;
-    }
-
-    .sidebar .nav-link:hover {
-      color: var(--text-primary);
-      background: var(--bg-hover);
-    }
-
-    .sidebar .nav-link.active {
-      color: var(--accent-secondary);
-      background: rgba(167, 139, 250, 0.08);
-      font-weight: 500;
-    }
-
-    .sidebar .nav-link.active::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 4px;
-      bottom: 4px;
-      width: 2px;
-      background: var(--accent-primary);
-      border-radius: 2px;
-    }
-
-    .sidebar .nav-link.sub {
-      padding-left: 24px;
-      font-size: 12px;
-      color: var(--text-dim);
-    }
-
-    .sidebar .nav-link.sub:hover {
-      color: var(--text-secondary);
-    }
-
-    .sidebar .nav-link.sub.active {
-      color: var(--accent-secondary);
-    }
-
-    .sidebar .back-link {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 12px;
-      margin-top: 12px;
-      font-size: 12px;
-      color: var(--text-dim);
-      text-decoration: none;
-      border-top: 1px solid var(--border-subtle);
-      transition: color 0.2s;
-    }
-
-    .sidebar .back-link:hover {
-      color: var(--text-secondary);
-    }
-
-    /* ===== 主内容 ===== */
-    .main {
-      flex: 1;
-      height: 100vh;
-      overflow-y: auto;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-subtle) transparent;
-      position: relative;
-      background: var(--bg-deep);
-      padding: 0 48px 60px;
-    }
-
-    .main::-webkit-scrollbar {
-      width: 4px;
-    }
-    .main::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .main::-webkit-scrollbar-thumb {
-      background: var(--border-subtle);
-      border-radius: 4px;
-    }
-
-    .main .scroll-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .main .scroll-bg .layer {
-      position: absolute;
-      inset: 0;
-      will-change: transform;
-      transform-style: preserve-3d;
-      opacity: 0.3;
-      transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .main .scroll-bg .layer-1 {
-      background: radial-gradient(ellipse 50% 30% at 30% 20%, var(--accent-glow-strong), transparent 70%);
-      transform: translate3d(calc(var(--mx) * 40px), calc(var(--my) * 40px), -80px) scale(1.2);
-    }
-    .main .scroll-bg .layer-2 {
-      background: radial-gradient(ellipse 40% 25% at 70% 80%, rgba(216, 180, 254, 0.05), transparent 60%);
-      transform: translate3d(calc(var(--mx) * 20px), calc(var(--my) * 20px), -40px) scale(1.08);
-    }
-
-    .main .content-wrap {
-      position: relative;
-      z-index: 1;
-      max-width: 820px;
-      margin: 0 auto;
-      padding-top: 32px;
-      transform: translate3d(calc(var(--mx) * 6px), calc(var(--my) * 6px), 0);
-      transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .main .content-wrap .doc-title {
-      font-family: var(--font-sans);
-      font-weight: 800;
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-      padding-top: 8px;
-    }
-
-    .main .content-wrap .doc-title .hl {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .main .content-wrap .doc-subtitle {
-      color: var(--text-dim);
-      font-size: 0.95rem;
-      margin-bottom: 32px;
-      font-weight: 400;
-      letter-spacing: 0.01em;
-    }
-
-    .main .content-wrap .doc-subtitle code {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--accent-secondary);
-      background: var(--bg-surface);
-      padding: 1px 8px;
-      border-radius: 4px;
-      border: 1px solid var(--border-subtle);
-    }
-
-    /* 文档元素 */
-    .doc-block {
-      margin-bottom: 28px;
-      animation: docFade 0.6s ease both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 60%;
-    }
-
-    @keyframes docFade {
-      0% {
-        opacity: 0;
-        transform: translateY(16px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .doc-block h2 {
-      font-family: var(--font-sans);
-      font-weight: 700;
-      font-size: 1.5rem;
-      letter-spacing: -0.01em;
-      margin-bottom: 4px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-    }
-
-    .doc-block h2 .anchor {
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 1rem;
-      margin-left: 8px;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .doc-block h2:hover .anchor {
-      opacity: 0.6;
-    }
-    .doc-block h2 .anchor:hover {
-      opacity: 1;
-    }
-
-    .doc-block h3 {
-      font-family: var(--font-sans);
-      font-weight: 600;
-      font-size: 1.1rem;
-      margin: 20px 0 6px;
-      color: var(--accent-secondary);
-    }
-
-    .doc-block h4 {
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin: 16px 0 4px;
-      color: var(--text-secondary);
-    }
-
-    .doc-block p {
-      font-size: 0.92rem;
-      color: var(--text-secondary);
-      line-height: 1.7;
-      margin-bottom: 8px;
-    }
-
-    .doc-block .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 10px;
-      margin: 10px 0;
-    }
-
-    .doc-block .card-grid .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 14px 16px;
-      transition: all 0.3s ease;
-    }
-
-    .doc-block .card-grid .card:hover {
-      border-color: var(--accent-primary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    }
-
-    .doc-block .card-grid .card .card-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .doc-block .card-grid .card .card-body {
-      font-size: 11.5px;
-      color: var(--text-dim);
-      margin-top: 2px;
-      line-height: 1.5;
-    }
-
-    .doc-block .card-grid .card code {
-      font-family: var(--font-mono);
-      font-size: 10.5px;
-      color: var(--accent-secondary);
-      background: var(--bg-deep);
-      padding: 1px 6px;
-      border-radius: 3px;
-    }
-
-    .doc-block .table-wrap {
-      overflow-x: auto;
-      margin: 10px 0 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .doc-block .table-wrap table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    .doc-block .table-wrap th {
-      background: var(--bg-surface);
-      color: var(--accent-secondary);
-      font-weight: 600;
-      text-align: left;
-      padding: 8px 14px;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .doc-block .table-wrap td {
-      padding: 7px 14px;
-      border-bottom: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      font-size: 0.82rem;
-    }
-
-    .doc-block .table-wrap tr:hover td {
-      background: var(--bg-surface);
-    }
-
-    .doc-block .table-wrap td code {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--accent-primary);
-      background: var(--bg-deep);
-      padding: 1px 6px;
-      border-radius: 3px;
-    }
-
-    .doc-block .code-block {
-      background: var(--bg-deep);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 16px 20px;
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      overflow-x: auto;
-      line-height: 1.8;
-      box-shadow: inset 0 4px 24px rgba(0, 0, 0, 0.4);
-      margin: 8px 0 12px;
-    }
-
-    .doc-block .code-block code {
-      color: var(--text-secondary);
-      font-size: 0.76rem;
-    }
-
-    .doc-block .code-block .kw {
-      color: #c084fc;
-    }
-    .doc-block .code-block .fn {
-      color: #f472b6;
-    }
-    .doc-block .code-block .str {
-      color: #34d399;
-    }
-    .doc-block .code-block .cm {
-      color: #5F5670;
-      font-style: italic;
-    }
-    .doc-block .code-block .num {
-      color: #fbbf24;
-    }
-    .doc-block .code-block .type {
-      color: #60a5fa;
-    }
-    .doc-block .code-block .op {
-      color: #f472b6;
-    }
-
-    .doc-block .callout {
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin: 10px 0 14px;
-      font-size: 0.85rem;
-      border-left: 3px solid;
-    }
-
-    .doc-block .callout.info {
-      background: rgba(167, 139, 250, 0.06);
-      border-color: var(--accent-primary);
-      color: var(--text-secondary);
-    }
-
-    .doc-block .callout.warn {
-      background: rgba(251, 191, 36, 0.06);
-      border-color: #fbbf24;
-      color: var(--text-secondary);
-    }
-
-    .doc-block .callout.danger {
-      background: rgba(248, 113, 113, 0.06);
-      border-color: #f87171;
-      color: var(--text-secondary);
-    }
-
-    .doc-block .callout.success {
-      background: rgba(52, 211, 153, 0.06);
-      border-color: #34d399;
-      color: var(--text-secondary);
-    }
-
-    .doc-block .callout .callout-title {
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 2px;
-    }
-
-    .doc-block .callout code {
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      color: var(--accent-secondary);
-      background: var(--bg-deep);
-      padding: 1px 6px;
-      border-radius: 3px;
-    }
-
-    .doc-block ul {
-      padding-left: 20px;
-      margin: 6px 0 10px;
-    }
-    .doc-block ul li {
-      font-size: 0.88rem;
-      color: var(--text-secondary);
+      background: var(--bg);
+      font-family: var(--md-font-family);
+      color: var(--text);
+      margin: 0;
       line-height: 1.7;
     }
-    .doc-block ul li code {
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      color: var(--accent-primary);
-      background: var(--bg-deep);
-      padding: 1px 6px;
-      border-radius: 3px;
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--md-surface-container); border-radius: var(--md-shape-small); }
+    ::-webkit-scrollbar-thumb { background: var(--md-outline-variant); border-radius: var(--md-shape-small); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--md-outline); }
+
+    /* ── Top nav ── */
+    #topbar {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 100;
+      background: var(--md-surface-container);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,.04);
+      display: flex; align-items: center;
+      padding: 0 24px; gap: 12px;
+    }
+    #topbar .brand { font-family: Syne, sans-serif; font-weight: 800; font-size: 14px; color: var(--text); letter-spacing: .03em; }
+    #topbar .brand-sub { font-size: 10px; color: var(--muted); margin-left: 2px; }
+    #topbar .badge {
+      font-size: 9px; padding: 2px 10px; border-radius: 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #000; font-weight: 600; letter-spacing: .05em;
     }
 
-    .doc-block .divider {
-      border: none;
-      border-top: 1px solid var(--border-subtle);
-      margin: 24px 0;
-    }
+    /* ── Layout ── */
+    .wrapper { display: flex; max-width: 1400px; margin: 0 auto; padding-top: 56px; min-height: 100vh; }
 
-    /* 返回顶部 */
-    .back-top {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 12px;
-      padding: 6px 0;
-      transition: color 0.2s;
+    /* ── Sidebar ── */
+    #sidebar {
+      position: sticky; top: 56px; width: 260px; max-height: calc(100vh - 56px);
+      overflow-y: auto; padding: 24px 16px 40px; flex-shrink: 0;
+      border-right: 1px solid var(--border);
     }
-    .back-top:hover {
-      color: var(--text-secondary);
+    #sidebar::-webkit-scrollbar { width: 4px; }
+    #sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+    #sidebar a {
+      color: var(--muted); text-decoration: none; font-size: 13px;
+      padding: 6px 12px; border-radius: var(--md-shape-small);
+      transition: all .15s;
     }
+    #sidebar a:hover { color: var(--text); background: var(--faint); }
+    #sidebar a.section { color: var(--accent); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; padding-top: 16px; }
+    #sidebar a.section:hover { background: none; color: var(--accent); }
+    #sidebar a.active { color: var(--md-on-primary); background: var(--md-primary-container); }
 
-    /* ===== 响应式 ===== */
-    @media (max-width: 820px) {
-      .sidebar {
-        width: 220px;
-        min-width: 220px;
-        padding: 16px 10px 30px;
-      }
-      .main {
-        padding: 0 24px 40px;
-      }
-      .sidebar .nav-link {
-        font-size: 11.5px;
-        padding: 4px 10px;
-      }
-      .sidebar .nav-link.sub {
-        font-size: 11px;
-        padding-left: 20px;
-      }
+    /* ── Content ── */
+    #content {
+      flex: 1; min-width: 0; padding: 40px 48px 80px;
     }
-
-    @media (max-width: 640px) {
-      .app {
-        flex-direction: column;
-      }
-      .sidebar {
-        width: 100%;
-        min-width: unset;
-        height: auto;
-        max-height: 40vh;
-        border-right: none;
-        border-bottom: 1px solid var(--border-subtle);
-        padding: 12px 16px 16px;
-        overflow-y: auto;
-        flex-shrink: 0;
-      }
-      .sidebar .brand {
-        font-size: 16px;
-        padding: 4px 0 10px;
-        margin-bottom: 10px;
-      }
-      .sidebar .nav-section {
-        padding: 8px 8px 2px;
-        font-size: 8px;
-      }
-      .sidebar .nav-link {
-        font-size: 11px;
-        padding: 3px 8px;
-        display: inline-block;
-      }
-      .sidebar .nav-link.sub {
-        padding-left: 16px;
-        font-size: 10.5px;
-      }
-      .sidebar .back-link {
-        padding: 6px 8px;
-        font-size: 11px;
-        margin-top: 6px;
-      }
-      .main {
-        height: calc(100vh - 40vh);
-        padding: 0 16px 30px;
-      }
-      .main .content-wrap {
-        padding-top: 16px;
-      }
-      .main .content-wrap .doc-title {
-        font-size: 1.6rem;
-      }
-      .doc-block .card-grid {
-        grid-template-columns: 1fr;
-      }
-      .doc-block .table-wrap table {
-        font-size: 0.75rem;
-      }
-      .doc-block .table-wrap td,
-      .doc-block .table-wrap th {
-        padding: 5px 10px;
-      }
-      .doc-block .code-block {
-        font-size: 0.68rem;
-        padding: 12px 14px;
-      }
-      .doc-block .code-block code {
-        font-size: 0.66rem;
-      }
+    #content h1 {
+      font-family: Syne, sans-serif; font-weight: 800; font-size: 32px;
+      margin: 0 0 8px; letter-spacing: -.02em;
     }
+    #content h1 .hl { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    #content .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 40px; }
+    #content h2 {
+      font-family: Syne, sans-serif; font-weight: 700; font-size: 22px;
+      margin: 48px 0 16px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    #content h3 {
+      font-size: 16px; font-weight: 600; margin: 32px 0 12px; color: var(--accent);
+    }
+    #content h4 {
+      font-size: 14px; font-weight: 600; margin: 24px 0 8px; color: var(--md-on-surface-variant);
+    }
+    #content p, #content li { font-size: 14px; color: var(--md-on-surface-variant); }
 
-    @media (max-width: 400px) {
-      .main {
-        padding: 0 12px 20px;
-      }
-      .doc-block .code-block {
-        font-size: 0.6rem;
-        padding: 10px 12px;
-      }
-      .doc-block .code-block code {
-        font-size: 0.58rem;
-      }
-      .doc-block .table-wrap td code {
-        font-size: 0.65rem;
-      }
+    /* ── Code blocks ── */
+    code {
+      font-family: var(--md-mono); font-size: 13px;
+      background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+      color: var(--accent);
+    }
+    pre {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: var(--md-shape-medium); padding: 16px 20px;
+      overflow-x: auto; font-family: var(--md-mono); font-size: 13px; line-height: 1.6;
+    }
+    pre code { background: none; padding: 0; color: inherit; }
+    .comment { color: #6b7280; }
+    .keyword { color: #c084fc; }
+    .string { color: #34d399; }
+    .number { color: #fbbf24; }
+    .type { color: #60a5fa; }
+    .fun { color: #f472b6; }
+    .tag { color: #f87171; }
+
+    /* ── Cards ── */
+    .card-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px; margin: 16px 0;
+    }
+    .card {
+      background: var(--md-surface-container); border: 1px solid var(--border);
+      border-radius: var(--md-shape-medium); padding: 14px 16px; transition: border-color .2s;
+    }
+    .card:hover { border-color: var(--accent); }
+    .card .card-title {
+      font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .card .card-title .icon { font-size: 16px; }
+    .card .card-body { font-size: 12px; color: var(--muted); }
+    .card code { font-size: 11px; }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: var(--md-shape-medium); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: var(--md-surface-container-high); color: var(--accent); font-weight: 600; text-align: left; padding: 10px 14px; white-space: nowrap; }
+    td { padding: 8px 14px; border-top: 1px solid var(--border); color: var(--md-on-surface-variant); }
+    tr:hover td { background: var(--md-surface-container); }
+    td code { font-size: 12px; }
+
+    /* ── Callout boxes ── */
+    .callout {
+      border-radius: var(--md-shape-medium); padding: 12px 16px; margin: 16px 0;
+      font-size: 13px; border-left: 4px solid;
+    }
+    .callout.info { background: rgba(208,188,255,.08); border-color: var(--accent); }
+    .callout.warn { background: rgba(251,191,36,.08); border-color: var(--warning); }
+    .callout.danger { background: rgba(242,184,181,.08); border-color: var(--danger); }
+    .callout.success { background: rgba(52,211,153,.08); border-color: var(--success); }
+    .callout .callout-title { font-weight: 600; margin-bottom: 4px; }
+
+    /* ── Section link ── */
+    .section-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted); text-decoration: none; font-size: 12px;
+      margin-left: 10px; opacity: 0; transition: opacity .2s;
+    }
+    h2:hover .section-link, h3:hover .section-link { opacity: 1; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      #sidebar { display: none; }
+      #content { padding: 24px 20px 60px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="app">
-    <!-- 侧边栏 -->
-    <nav class="sidebar">
-      <div class="brand">
-        <span class="hl">Amadeus</span>
-        <span class="ver">v1.0</span>
-      </div>
+<div id="topbar">
+  <span class="brand">AMADEUS</span>
+  <span class="brand-sub">脚本系统 API 参考</span>
+  <span class="badge">v1.0 · GraalJS</span>
+</div>
 
-      <div class="nav-section">概述</div>
-      <a href="#intro" class="nav-link active">基本概念</a>
-      <a href="#commands" class="nav-link sub">控制台命令</a>
-
-      <div class="nav-section">createModule</div>
-      <a href="#cm-syntax" class="nav-link">语法</a>
-      <a href="#cm-hooks" class="nav-link sub">事件钩子</a>
-      <a href="#cm-advanced" class="nav-link sub">高级用法</a>
-
-      <div class="nav-section">事件参考</div>
-      <a href="#ev-game" class="nav-link">游戏循环</a>
-      <a href="#ev-motion" class="nav-link sub">移动 &amp; 旋转</a>
-      <a href="#ev-packet" class="nav-link sub">网络包</a>
-      <a href="#ev-chat" class="nav-link sub">聊天</a>
-      <a href="#ev-render" class="nav-link sub">渲染</a>
-      <a href="#ev-world" class="nav-link sub">世界 &amp; 实体</a>
-      <a href="#ev-other" class="nav-link sub">其他</a>
-
-      <div class="nav-section">预绑定变量</div>
-      <a href="#prelude-types" class="nav-link">Java 类型</a>
-      <a href="#prelude-utils" class="nav-link sub">工具类</a>
-      <a href="#prelude-funcs" class="nav-link sub">辅助函数</a>
-
-      <div class="nav-section">示例</div>
-      <a href="#ex-centertext" class="nav-link">CenterText</a>
-      <a href="#ex-chatlog" class="nav-link sub">聊天日志</a>
-
-      <div class="nav-section">注意事项</div>
-      <a href="#pitfalls" class="nav-link">常见陷阱</a>
-
-      <a href="index.html" class="back-link">← 返回主页</a>
+<div class="wrapper">
+  <div id="sidebar">
+    <nav>
+      <a class="section" href="#intro">概述</a>
+      <a href="#intro-basic">基本概念</a>
+      <a href="#intro-commands">控制台命令</a>
+      <a class="section" href="#createModule">createModule</a>
+      <a href="#cm-syntax">语法</a>
+      <a href="#cm-hooks">事件钩子</a>
+      <a href="#cm-advanced">高级用法</a>
+      <a class="section" href="#events">事件参考</a>
+      <a href="#ev-game">游戏循环</a>
+      <a href="#ev-motion">移动 &amp; 旋转</a>
+      <a href="#ev-packet">网络包</a>
+      <a href="#ev-chat">聊天</a>
+      <a href="#ev-render">渲染</a>
+      <a href="#ev-world">世界 &amp; 实体</a>
+      <a href="#ev-other">其他</a>
+      <a class="section" href="#prelude">预绑定变量</a>
+      <a href="#prelude-types">Java 类型</a>
+      <a href="#prelude-utils">工具类</a>
+      <a href="#prelude-packets">网络包</a>
+      <a href="#prelude-funcs">辅助函数</a>
+      <a href="#prelude-player">玩家访问器 __player</a>
+      <a class="section" href="#examples">完整示例</a>
+      <a href="#ex-centertext">CenterText</a>
+      <a href="#ex-chatlog">聊天日志</a>
+      <a href="#ex-autorp">自动旁观</a>
+      <a class="section" href="#pitfalls">注意事项</a>
+      <a href="#pitfall-types">类型陷阱</a>
+      <a href="#pitfall-overload">方法重载</a>
+      <a href="#pitfall-reload">热重载</a>
     </nav>
-
-    <!-- 主内容 -->
-    <main class="main" id="mainContent">
-      <div class="scroll-bg">
-        <div class="layer layer-1"></div>
-        <div class="layer layer-2"></div>
-      </div>
-
-      <div class="content-wrap">
-
-        <h1 class="doc-title"><span class="hl">~/ scripts</span> — API 参考</h1>
-        <p class="doc-subtitle">基于 GraalJS 的 JavaScript 脚本引擎 · 隔离上下文 · 模块化注册 · 35+ 事件</p>
-
-        <!-- ============================================================ -->
-        <!-- 概述 -->
-        <!-- ============================================================ -->
-        <div class="doc-block" id="intro">
-          <h2>概述 <a href="#intro" class="anchor">#</a></h2>
-          <h3>基本概念</h3>
-          <div class="card-grid">
-            <div class="card">
-              <div class="card-title">📁 存放目录</div>
-              <div class="card-body"><code>~/.zen/liquidres/scripts/</code><br>所有 <code>.js</code> 文件自动扫描加载。</div>
-            </div>
-            <div class="card">
-              <div class="card-title">🧩 隔离上下文</div>
-              <div class="card-body">每个脚本独立 GraalJS Context，变量/函数互不冲突。</div>
-            </div>
-            <div class="card">
-              <div class="card-title">🔌 模块化注册</div>
-              <div class="card-body"><code>createModule()</code> 自动加入 ModuleManager，可在 ClickGUI 中开关、绑键。</div>
-            </div>
-            <div class="card">
-              <div class="card-title">🔄 热重载</div>
-              <div class="card-body">编辑后 <code>.script reload</code> 即可生效，自动恢复模块状态。</div>
-            </div>
-            <div class="card">
-              <div class="card-title">⚡ 事件驱动</div>
-              <div class="card-body">支持 35+ 种事件（Tick、Motion、Packet、Render…）</div>
-            </div>
-            <div class="card">
-              <div class="card-title">🌐 免 import</div>
-              <div class="card-body">所有常用 Java 类型、事件类、工具类已预绑定。</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 控制台命令 -->
-        <div class="doc-block" id="commands">
-          <h3>控制台命令</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>命令</th><th>说明</th></tr></thead>
-              <tbody>
-                <tr><td><code>.script load &lt;文件名.js&gt;</code></td><td>加载脚本（文件必须在 <code>scripts/</code> 目录）</td></tr>
-                <tr><td><code>.script reload &lt;脚本名&gt;</code></td><td>热重载指定脚本（不需要 <code>.js</code> 后缀）</td></tr>
-                <tr><td><code>.script reloadall</code></td><td>热重载所有已加载脚本</td></tr>
-                <tr><td><code>.script unload &lt;脚本名&gt;</code></td><td>卸载脚本（自动禁用并移除模块）</td></tr>
-                <tr><td><code>.script list</code></td><td>列出所有已加载脚本</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="callout info">
-            <div class="callout-title">提示</div>
-            脚本名 = 文件名去掉 <code>.js</code>。例如 <code>CenterText.js</code> 的脚本名为 <code>CenterText</code>。
-          </div>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- createModule -->
-        <!-- ============================================================ -->
-        <div class="doc-block" id="cm-syntax">
-          <h2>createModule() — 创建脚本模块 <a href="#cm-syntax" class="anchor">#</a></h2>
-          <h3>语法</h3>
-          <div class="code-block">
-            <code>
-              <span class="kw">var</span> mod = <span class="fn">createModule</span>(<span class="str">"模块名"</span>, <span class="type">Category</span>.MISC, {<br>
-              &nbsp;&nbsp;<span class="fn">onTick</span>: <span class="kw">function</span>(e) { <span class="cm">/* ... */</span> },<br>
-              &nbsp;&nbsp;<span class="fn">onMotion</span>: <span class="kw">function</span>(e) { <span class="cm">/* ... */</span> },<br>
-              &nbsp;&nbsp;<span class="fn">onRender2D</span>: <span class="kw">function</span>(e) { <span class="cm">/* ... */</span> },<br>
-              &nbsp;&nbsp;<span class="fn">onEnable</span>: <span class="kw">function</span>() { <span class="cm">/* ... */</span> },<br>
-              &nbsp;&nbsp;<span class="fn">onDisable</span>: <span class="kw">function</span>() { <span class="cm">/* ... */</span> }<br>
-              });
-            </code>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>参数</th><th>类型</th><th>说明</th></tr></thead>
-              <tbody>
-                <tr><td><code>name</code></td><td>string</td><td>模块名称，显示在 ClickGUI 和 HUD 中</td></tr>
-                <tr><td><code>cat</code></td><td>Category</td><td>分类：<code>COMBAT</code> / <code>MOVEMENT</code> / <code>PLAYER</code> / <code>RENDER</code> / <code>WORLD</code> / <code>MISC</code></td></tr>
-                <tr><td><code>hooks</code></td><td>object</td><td>事件回调映射，key 为钩子名，value 为处理函数</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p>返回值是一个 <code>ScriptModule</code> 实例，可直接调用 <code>mod.setKey()</code>、<code>mod.setEnabled()</code> 等方法。</p>
-        </div>
-
-        <!-- 事件钩子 -->
-        <div class="doc-block" id="cm-hooks">
-          <h3>事件钩子一览</h3>
-          <p>在 <code>hooks</code> 对象中使用的 key 与事件的对应关系如下。所有事件回调接收一个事件参数 <code>e</code>。</p>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>钩子名</th><th>事件类</th><th>触发时机</th></tr></thead>
-              <tbody>
-                <tr><td><code>onTick</code></td><td>TickEvent</td><td>客户端每 tick（1/20 秒）</td></tr>
-                <tr><td><code>onGameTick</code></td><td>GameTickEvent</td><td>游戏 tick 更新</td></tr>
-                <tr><td><code>onPreTick</code></td><td>PreTickEvent</td><td>tick 前预处理</td></tr>
-                <tr><td><code>onKey</code></td><td>KeyEvent</td><td>按键按下/释放（<code>e.getKeyCode()</code>，<code>e.isPressed()</code>）</td></tr>
-                <tr><td><code>onMotion</code></td><td>MotionEvent</td><td>发送移动包前（可修改位置/旋转）</td></tr>
-                <tr><td><code>onPreMotion</code></td><td>PreMotionEvent</td><td>PreMotion 阶段</td></tr>
-                <tr><td><code>onPostMotion</code></td><td>PostMotionEvent</td><td>PostMotion 阶段</td></tr>
-                <tr><td><code>onRotation</code></td><td>RotationEvent</td><td>旋转计算</td></tr>
-                <tr><td><code>onStrafe</code></td><td>StrafeEvent</td><td>移动方向修正</td></tr>
-                <tr><td><code>onJump</code></td><td>JumpEvent</td><td>跳跃时</td></tr>
-                <tr><td><code>onPacket</code></td><td>PacketEvent</td><td>发送或接收任意包</td></tr>
-                <tr><td><code>onSendPacket</code></td><td>PacketSendEvent</td><td>发包时（可取消）</td></tr>
-                <tr><td><code>onReceivePacket</code></td><td>ReceivePacketEvent</td><td>收包时（可取消）</td></tr>
-                <tr><td><code>onPrePacket</code></td><td>PrePacketEvent</td><td>包发送前预处理</td></tr>
-                <tr><td><code>onChat</code></td><td>ChatEvent</td><td>玩家发送聊天消息（可取消）</td></tr>
-                <tr><td><code>onChatReceive</code></td><td>ChatReceiveEvent</td><td>收到服务器聊天消息（可修改内容）</td></tr>
-                <tr><td><code>onRender2D</code></td><td>Render2DEvent</td><td>2D GUI 渲染</td></tr>
-                <tr><td><code>onGlRender</code></td><td>GlRenderEvent</td><td>3D 渲染</td></tr>
-                <tr><td><code>onRender</code></td><td>RenderEvent</td><td>通用渲染</td></tr>
-                <tr><td><code>onRenderEntity</code></td><td>RenderEntityEvent</td><td>实体渲染时</td></tr>
-                <tr><td><code>onWorldChange</code></td><td>WorldChangeEvent</td><td>切换世界/服务器</td></tr>
-                <tr><td><code>onDisconnect</code></td><td>DisconnectEvent</td><td>断开连接</td></tr>
-                <tr><td><code>onEntityHurt</code></td><td>EntityHurtEvent</td><td>实体受伤</td></tr>
-                <tr><td><code>onEntityRemove</code></td><td>EntityRemoveEvent</td><td>实体移除</td></tr>
-                <tr><td><code>onSlowdown</code></td><td>SlowdownEvent</td><td>减速效果（可取消）</td></tr>
-                <tr><td><code>onSneak</code></td><td>SneakEvent</td><td>潜行状态变化</td></tr>
-                <tr><td><code>onSprint</code></td><td>SprintEvent</td><td>疾跑状态变化</td></tr>
-                <tr><td><code>onFallFlying</code></td><td>FallFlyingEvent</td><td>鞘翅飞行状态</td></tr>
-                <tr><td><code>onCameraPitch</code></td><td>CameraPitchEvent</td><td>摄像机俯仰角</td></tr>
-                <tr><td><code>onStuckInBlock</code></td><td>StuckInBlockEvent</td><td>卡方块检测</td></tr>
-                <tr><td><code>onHeldItem</code></td><td>UpdateHeldItemEvent</td><td>手持物品槽位变化</td></tr>
-                <tr><td><code>onRayTrace</code></td><td>RayTraceEvent</td><td>射线追踪（可修改目标）</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- 高级用法 -->
-        <div class="doc-block" id="cm-advanced">
-          <h3>高级用法</h3>
-          <h4>绑定快捷键</h4>
-          <div class="code-block">
-            <code>mod.<span class="fn">setKey</span>(<span class="num">295</span>); <span class="cm">// GLFW_F6</span></code>
-          </div>
-          <p>键码为 <strong>GLFW</strong> 键码。常用：<code>F6 = 295</code>、<code>RSHIFT = 345</code>、<code>LCONTROL = 341</code>。</p>
-
-          <h4>创建设置项</h4>
-          <div class="code-block">
-            <code>
-              <span class="kw">var</span> speed = <span class="kw">new</span> <span class="type">NumberSetting</span>(<span class="str">"Speed"</span>, <span class="num">1.0</span>, <span class="num">0.1</span>, <span class="num">10.0</span>, <span class="num">0.1</span>);<br>
-              <span class="kw">var</span> mode = <span class="kw">new</span> <span class="type">ModeSetting</span>(<span class="str">"Mode"</span>, <span class="str">"Vanilla"</span>, [<span class="str">"Vanilla"</span>, <span class="str">"Hypixel"</span>]);<br>
-              mod.<span class="fn">registerSetting</span>(speed);<br>
-              mod.<span class="fn">registerSetting</span>(mode);<br><br>
-              <span class="cm">// 在事件中读取设置</span><br>
-              <span class="kw">var</span> s = speed.<span class="fn">getValue</span>(); <span class="cm">// double</span><br>
-              <span class="kw">var</span> m = mode.<span class="fn">getSelected</span>(); <span class="cm">// string</span>
-            </code>
-          </div>
-          <div class="callout info">
-            <div class="callout-title">设置项注册后自动显示在 ClickGUI</div>
-            调用 <code>mod.registerSetting(setting)</code> 后，设置会自动出现在 ClickGUI 的模块设置面板中。
-          </div>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- 事件参考 -->
-        <!-- ============================================================ -->
-        <div class="doc-block" id="ev-game">
-          <h2>事件类型参考 <a href="#ev-game" class="anchor">#</a></h2>
-          <p>预绑定的事件类型可以直接用在 <code>mod.when()</code> 中。以下是所有事件的详细说明。</p>
-
-          <h3>游戏循环</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
-              <tbody>
-                <tr><td>TickEvent</td><td><code>TickEvent</code></td><td>无额外属性，每帧触发</td></tr>
-                <tr><td>GameTickEvent</td><td><code>GameTickEvent</code></td><td>无额外属性，游戏 tick 时触发</td></tr>
-                <tr><td>PreTickEvent</td><td><code>PreTickEvent</code></td><td><code>e.isPre()</code> — 真假判断</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="doc-block" id="ev-motion">
-          <h3>移动 &amp; 旋转</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
-              <tbody>
-                <tr><td>KeyEvent</td><td><code>KeyEvent</code></td><td><code>e.getKeyCode()</code> int · <code>e.isPressed()</code> boolean</td></tr>
-                <tr><td>MotionEvent</td><td><code>MotionEvent</code></td><td><code>e.x/y/z</code> double · <code>e.yaw/pitch</code> float · <code>e.onGround</code> boolean</td></tr>
-                <tr><td>PreMotionEvent</td><td><code>PreMotionEvent</code></td><td>同 MotionEvent（pre=true）</td></tr>
-                <tr><td>PostMotionEvent</td><td><code>PostMotionEvent</code></td><td>同 MotionEvent（post=true）</td></tr>
-                <tr><td>RotationEvent</td><td><code>RotationEvent</code></td><td><code>e.yaw/pitch</code> float</td></tr>
-                <tr><td>StrafeEvent</td><td><code>StrafeEvent</code></td><td><code>e.forward/strafe</code> float · <code>e.friction</code> float</td></tr>
-                <tr><td>JumpEvent</td><td><code>JumpEvent</code></td><td><code>e.motionY</code> double</td></tr>
-                <tr><td>SlowdownEvent</td><td><code>SlowdownEvent</code></td><td>可取消：<code>e.setCancelled(true)</code></td></tr>
-                <tr><td>SneakEvent</td><td><code>SneakEvent</code></td><td><code>e.isSneaking()</code> boolean</td></tr>
-                <tr><td>SprintEvent</td><td><code>SprintEvent</code></td><td><code>e.isSprinting()</code> boolean</td></tr>
-                <tr><td>FallFlyingEvent</td><td><code>FallFlyingEvent</code></td><td><code>e.isFlying()</code> boolean</td></tr>
-                <tr><td>CameraPitchEvent</td><td><code>CameraPitchEvent</code></td><td><code>e.pitch</code> float</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="doc-block" id="ev-packet">
-          <h3>网络包</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
-              <tbody>
-                <tr><td>PacketEvent</td><td><code>PacketEvent</code></td><td><code>e.getPacket()</code> Packet</td></tr>
-                <tr><td>PacketSendEvent</td><td><code>PacketSendEvent</code></td><td><code>e.getPacket()</code> · 可取消</td></tr>
-                <tr><td>ReceivePacketEvent</td><td><code>ReceivePacketEvent</code></td><td><code>e.getPacket()</code> · 可取消</td></tr>
-                <tr><td>PrePacketEvent</td><td><code>PrePacketEvent</code></td><td><code>e.getPacket()</code> · 预处理</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="doc-block" id="ev-chat">
-          <h3>聊天</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
-              <tbody>
-                <tr><td>ChatEvent</td><td><code>ChatEvent</code></td><td><code>e.getMessage()</code> · <code>e.setMessage()</code> · 可取消</td></tr>
-                <tr><td>ChatReceiveEvent</td><td><code>ChatReceiveEvent</code></td><td><code>e.getMessage()</code> Component · <code>e.setMessage()</code> · 可取消</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="doc-block" id="ev-render">
-          <h3>渲染</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
-              <tbody>
-                <tr><td>Render2DEvent</td><td><code>Render2DEvent</code></td><td><code>e.poseStack()</code> · <code>e.guiGraphics()</code> · <code>e.partialTick()</code></td></tr>
-                <tr><td>GlRenderEvent</td><td><code>GlRenderEvent</code></td><td><code>e.poseStack()</code> · <code>e.camera()</code> · <code>e.partialTick()</code></td></tr>
-                <tr><td>RenderEvent</td><td><code>RenderEvent</code></td><td><code>e.poseStack()</code> · <code>e.partialTick()</code></td></tr>
-                <tr><td>RenderEntityEvent</td><td><code>RenderEntityEvent</code></td><td><code>e.entity()</code> · <code>e.poseStack()</code> · <code>e.partialTick()</code></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="doc-block" id="ev-world">
-          <h3>世界 &amp; 实体</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
-              <tbody>
-                <tr><td>WorldChangeEvent</td><td><code>WorldChangeEvent</code></td><td>无额外属性</td></tr>
-                <tr><td>DisconnectEvent</td><td><code>DisconnectEvent</code></td><td>无额外属性</td></tr>
-                <tr><td>EntityHurtEvent</td><td><code>EntityHurtEvent</code></td><td><code>e.entity</code> · <code>e.damageSource</code> · <code>e.damage</code></td></tr>
-                <tr><td>EntityRemoveEvent</td><td><code>EntityRemoveEvent</code></td><td><code>e.entity</code> · <code>e.removeReason</code></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="doc-block" id="ev-other">
-          <h3>其他</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
-              <tbody>
-                <tr><td>UpdateHeldItemEvent</td><td><code>UpdateHeldItemEvent</code></td><td><code>e.oldSlot</code> · <code>e.newSlot</code> · <code>e.itemStack</code></td></tr>
-                <tr><td>RayTraceEvent</td><td><code>RayTraceEvent</code></td><td><code>e.hitResult</code> · 可修改</td></tr>
-                <tr><td>RotationAnimationEvent</td><td><code>RotationAnimationEvent</code></td><td><code>e.yaw/pitch</code> · <code>e.duration</code></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- 预绑定变量 -->
-        <!-- ============================================================ -->
-        <div class="doc-block" id="prelude-types">
-          <h2>预绑定变量 <a href="#prelude-types" class="anchor">#</a></h2>
-          <p>脚本引擎已自动注入以下变量，无需 <code>import</code> 或 <code>Java.type()</code>，开箱即用。</p>
-
-          <h3>Java 类型</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>变量名</th><th>Java 类</th></tr></thead>
-              <tbody>
-                <tr><td><code>Module</code></td><td><code>client.amadeus.modules.Module</code></td></tr>
-                <tr><td><code>Category</code></td><td><code>client.amadeus.modules.Category</code></td></tr>
-                <tr><td><code>KeyBind</code></td><td><code>client.amadeus.modules.KeyBind</code></td></tr>
-                <tr><td><code>EventTarget</code></td><td><code>client.amadeus.event.EventTarget</code></td></tr>
-                <tr><td><code>Setting</code></td><td><code>client.amadeus.settings.Setting</code></td></tr>
-                <tr><td><code>BooleanSetting</code></td><td><code>client.amadeus.settings.impl.BooleanSetting</code></td></tr>
-                <tr><td><code>NumberSetting</code></td><td><code>client.amadeus.settings.impl.NumberSetting</code></td></tr>
-                <tr><td><code>ModeSetting</code></td><td><code>client.amadeus.settings.impl.ModeSetting</code></td></tr>
-                <tr><td><code>ColorSetting</code></td><td><code>client.amadeus.settings.impl.ColorSetting</code></td></tr>
-                <tr><td><code>ScriptModule</code></td><td><code>client.amadeus.script.ScriptModule</code></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="doc-block" id="prelude-utils">
-          <h3>工具类 &amp; 核心类</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>类别</th><th>变量名</th><th>Java 类</th></tr></thead>
-              <tbody>
-                <tr><td rowspan="3">客户端核心</td><td><code>Client</code></td><td><code>client.amadeus.Client</code></td></tr>
-                <tr><td><code>ClientBase</code></td><td><code>client.amadeus.ClientBase</code></td></tr>
-                <tr><td><code>mc</code></td><td><code>Minecraft</code> 实例</td></tr>
-                <tr><td rowspan="4">管理器</td><td><code>ModuleManager</code></td><td><code>client.amadeus.manager.ModuleManager</code></td></tr>
-                <tr><td><code>ConfigManager</code></td><td><code>client.amadeus.manager.ConfigManager</code></td></tr>
-                <tr><td><code>CommandManager</code></td><td><code>client.amadeus.manager.CommandManager</code></td></tr>
-                <tr><td><code>HudManager</code></td><td><code>client.amadeus.manager.HudManager</code></td></tr>
-                <tr><td rowspan="3">HUD 基类</td><td><code>HudElement</code></td><td><code>client.amadeus.hud.HudElement</code></td></tr>
-                <tr><td><code>IHudElement</code></td><td><code>client.amadeus.hud.IHudElement</code></td></tr>
-                <tr><td><code>HUDManager</code></td><td><code>client.amadeus.hud.HUDManager</code></td></tr>
-                <tr><td rowspan="6">游戏工具</td><td><code>BlockUtil</code></td><td><code>client.amadeus.utils.game.BlockUtil</code></td></tr>
-                <tr><td><code>EntityUtil</code></td><td><code>client.amadeus.utils.game.EntityUtil</code></td></tr>
-                <tr><td><code>ItemUtil</code></td><td><code>client.amadeus.utils.game.ItemUtil</code></td></tr>
-                <tr><td><code>MovementUtil</code></td><td><code>client.amadeus.utils.game.MovementUtil</code></td></tr>
-                <tr><td><code>PlayerUtil</code></td><td><code>client.amadeus.utils.game.PlayerUtil</code></td></tr>
-                <tr><td><code>RotationUtil</code></td><td><code>client.amadeus.utils.game.RotationUtil</code></td></tr>
-                <tr><td rowspan="6">渲染工具</td><td><code>ColorUtil</code></td><td><code>client.amadeus.utils.render.ColorUtil</code></td></tr>
-                <tr><td><code>ProjectionUtil</code></td><td><code>client.amadeus.utils.render.ProjectionUtil</code></td></tr>
-                <tr><td><code>RenderHelper</code></td><td><code>client.amadeus.utils.render.RenderHelper</code></td></tr>
-                <tr><td><code>RenderUtil</code></td><td><code>client.amadeus.utils.render.RenderUtil</code></td></tr>
-                <tr><td><code>TextureUtil</code></td><td><code>client.amadeus.utils.render.TextureUtil</code></td></tr>
-                <tr><td><code>FontUtil</code></td><td><code>client.amadeus.utils.render.FontUtil</code></td></tr>
-                <tr><td rowspan="3">数学工具</td><td><code>MathUtil</code></td><td><code>client.amadeus.utils.math.MathUtil</code></td></tr>
-                <tr><td><code>LerpUtil</code></td><td><code>client.amadeus.utils.math.LerpUtil</code></td></tr>
-                <tr><td><code>Easings</code></td><td><code>client.amadeus.utils.math.Easings</code></td></tr>
-                <tr><td rowspan="4">杂项工具</td><td><code>ChatUtil</code></td><td><code>client.amadeus.utils.misc.ChatUtil</code></td></tr>
-                <tr><td><code>PacketUtil</code></td><td><code>client.amadeus.utils.misc.PacketUtil</code></td></tr>
-                <tr><td><code>ReflectionUtil</code></td><td><code>client.amadeus.utils.misc.ReflectionUtil</code></td></tr>
-                <tr><td><code>TimerUtil</code></td><td><code>client.amadeus.utils.misc.Timer</code></td></tr>
-                <tr><td rowspan="2">脚本系统</td><td><code>ScriptModule</code></td><td><code>client.amadeus.script.ScriptModule</code></td></tr>
-                <tr><td><code>ScriptManager</code></td><td><code>client.amadeus.script.ScriptManager</code></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="doc-block" id="prelude-funcs">
-          <h3>辅助函数</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>函数</th><th>说明</th></tr></thead>
-              <tbody>
-                <tr><td><code>createModule(name, cat, hooks)</code></td><td>创建脚本模块，自动注册到 ModuleManager，返回 ScriptModule 实例</td></tr>
-                <tr><td><code>printChat(msg)</code></td><td>输出彩色消息到游戏聊天栏（支持 § 颜色码）</td></tr>
-                <tr><td><code>sendPacket(pkt)</code></td><td>快捷发送网络包</td></tr>
-                <tr><td><code>drawRoundedRect(pose, x, y, w, h, r, color)</code></td><td>安全绘制圆角矩形（自动处理 GraalJS 类型问题）</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- 示例 -->
-        <!-- ============================================================ -->
-        <div class="doc-block" id="ex-centertext">
-          <h2>完整示例 <a href="#ex-centertext" class="anchor">#</a></h2>
-          <h3>CenterText.js — 屏幕中央渲染文字</h3>
-          <div class="code-block">
-            <code>
-              <span class="kw">var</span> module = <span class="fn">createModule</span>(<span class="str">"CenterText"</span>, <span class="type">Category</span>.RENDER, {<br>
-              &nbsp;&nbsp;<span class="fn">onRender2D</span>: <span class="kw">function</span>(e) {<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">var</span> gui = e.guiGraphics();<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">var</span> sw = mc.getWindow().getGuiScaledWidth();<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">var</span> sh = mc.getWindow().getGuiScaledHeight();<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">var</span> title = <span class="str">"§bAmadeus §7× §aScripts"</span>;<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;gui.drawString(mc.font, title,<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((sw - mc.font.width(title)) / <span class="num">2</span>) | <span class="num">0</span>,<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((sh / <span class="num">2</span> - <span class="num">20</span>) | <span class="num">0</span>),<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<span class="num">1</span>, <span class="kw">true</span>);<br>
-              &nbsp;&nbsp;}<br>
-              });<br>
-              module.<span class="fn">setKey</span>(<span class="num">295</span>); <span class="cm">// GLFW_F6</span>
-            </code>
-          </div>
-        </div>
-
-        <div class="doc-block" id="ex-chatlog">
-          <h3>ChatLog.js — 聊天消息日志记录</h3>
-          <div class="code-block">
-            <code>
-              <span class="kw">var</span> mod = <span class="fn">createModule</span>(<span class="str">"ChatLog"</span>, <span class="type">Category</span>.MISC, {<br>
-              &nbsp;&nbsp;<span class="fn">onChatReceive</span>: <span class="kw">function</span>(e) {<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;java.lang.System.out.println(<span class="str">"[CHAT] "</span> + e.getMessage().getString());<br>
-              &nbsp;&nbsp;},<br>
-              &nbsp;&nbsp;<span class="fn">onChat</span>: <span class="kw">function</span>(e) {<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (e.getMessage().contains(<span class="str">"badword"</span>)) {<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.setCancelled(<span class="kw">true</span>);<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">printChat</span>(<span class="str">"§c消息被拦截！"</span>);<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;}<br>
-              &nbsp;&nbsp;}<br>
-              });
-            </code>
-          </div>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- 注意事项 -->
-        <!-- ============================================================ -->
-        <div class="doc-block" id="pitfalls">
-          <h2>注意事项 <a href="#pitfalls" class="anchor">#</a></h2>
-
-          <div class="callout danger">
-            <div class="callout-title">类型陷阱 — 颜色值超出 int 范围</div>
-            <p>JavaScript 中 <code>0x90000000</code> 的值是 2415919104，超出 Java <code>int</code> 最大值。用 <code>| 0</code> 强制转成 32 位有符号整数：<code>0x90000000 | 0</code>。</p>
-          </div>
-
-          <div class="callout danger">
-            <div class="callout-title">方法重载 — Double 不能转 float</div>
-            <p>JS 的 <code>number</code> 类型都是 <code>Double</code>，涉及 <code>drawRoundedRect</code> 等重载方法时，用 <code>| 0</code> 确保整数传入。</p>
-          </div>
-
-          <div class="callout warn">
-            <div class="callout-title">热重载提示</div>
-            <p><code>.script reload</code> 使用 <strong>脚本名</strong>（不带 <code>.js</code>），如 <code>.script reload CenterText</code>。重载会自动恢复该脚本所有模块的启用/禁用状态。</p>
-          </div>
-
-          <div class="callout info">
-            <div class="callout-title">键码说明</div>
-            <p>使用 <strong>GLFW 键码</strong>。常用：<code>F6 = 295</code>，<code>RSHIFT = 345</code>，<code>LCONTROL = 341</code>，<code>GRAVE = 96</code>。</p>
-          </div>
-
-          <div class="callout info">
-            <div class="callout-title">预绑定覆盖了所有 client.amadeus.* 类</div>
-            <p>源码中 <code>client.amadeus.*</code> 下的所有工具类、事件类、管理器都已预绑定。构建后类名会被混淆，但预绑定的 <code>Java.type</code> 字符串会被 ASM 自动重写，脚本完全不需要关心混淆后的类名。</p>
-          </div>
-        </div>
-
-        <hr class="divider">
-        <div style="text-align:center;color:var(--text-dim);font-size:11px;padding:12px 0 8px;letter-spacing:0.04em;">
-          Amadeus Scripting API · 基于 GraalVM GraalJS · 所有 API 以实际游戏内表现为准
-        </div>
-        <div style="text-align:center;padding-bottom:20px;">
-          <a href="index.html" class="back-top" style="display:inline-flex;gap:6px;color:var(--text-dim);text-decoration:none;font-size:12px;">← 返回主页</a>
-        </div>
-
-      </div><!-- /content-wrap -->
-    </main>
   </div>
 
-  <script>
-    (function() {
-      var main = document.getElementById('mainContent');
-      var root = document.documentElement;
-      var mx = 0,
-        my = 0;
-      var targetMx = 0,
-        targetMy = 0;
+  <div id="content">
+    <!-- ============================================================== -->
+    <!--  概述                                                           -->
+    <!-- ============================================================== -->
+    <h1><span class="hl">~/ scripts</span> — 脚本系统参考</h1>
+    <p class="subtitle">基于 GraalJS（GraalVM Polyglot）的 JavaScript 脚本引擎，提供隔离上下文、模块化注册、事件驱动的完整脚本框架。</p>
 
-      // 视差跟随鼠标
-      document.addEventListener('mousemove', function(e) {
-        var x = (e.clientX / window.innerWidth) * 2 - 1;
-        var y = (e.clientY / window.innerHeight) * 2 - 1;
-        targetMx = x;
-        targetMy = y;
-      });
+    <h2 id="intro">概述 <a class="section-link" href="#intro">#</a></h2>
 
-      function smoothParallax() {
-        mx += (targetMx - mx) * 0.08;
-        my += (targetMy - my) * 0.08;
-        root.style.setProperty('--mx', mx);
-        root.style.setProperty('--my', my);
-        requestAnimationFrame(smoothParallax);
-      }
-      smoothParallax();
+    <h3 id="intro-basic">基本概念</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-title"><span class="icon material-symbols-outlined">folder</span> 存放目录</div>
+        <div class="card-body"><code>~/.zen/liquidres/scripts/</code><br>所有 <code>.js</code> 文件会自动被扫描加载。</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon material-symbols-outlined">layers</span> 隔离上下文</div>
+        <div class="card-body">每个脚本拥有独立的 GraalJS Context，变量/函数互不冲突。</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon material-symbols-outlined">extension</span> 模块化注册</div>
+        <div class="card-body">通过 <code>createModule()</code> 创建的模块自动加入 <strong>ModuleManager</strong>，可在 ClickGUI 中开关、绑键。</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon material-symbols-outlined">sync</span> 热重载</div>
+        <div class="card-body">编辑脚本后可用命令重载，自动恢复模块启用状态，无需重启游戏。</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon material-symbols-outlined">event</span> 事件驱动</div>
+        <div class="card-body">支持 <strong>35+</strong> 种事件（Tick、Motion、Packet、Render…），注册回调即可响应。</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon material-symbols-outlined">globe</span> 免 import</div>
+        <div class="card-body">所有常用 Java 类型、事件类、工具类已预绑定，开箱即用。</div>
+      </div>
+    </div>
 
-      // 侧边栏导航高亮 — 滚动监听
-      var navLinks = document.querySelectorAll('.sidebar .nav-link');
-      var sections = document.querySelectorAll('.doc-block');
+    <h3 id="intro-commands">控制台命令</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>命令</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><code>.script load &lt;文件名.js&gt;</code></td><td>加载脚本（文件必须在 <code>scripts/</code> 目录下）</td></tr>
+          <tr><td><code>.script reload</code></td><td>自动加载新 <code>.js</code> + 重载已有脚本（无参快捷方式）</td></tr>
+          <tr><td><code>.script reload &lt;脚本名&gt;</code></td><td>热重载指定脚本（不需要 <code>.js</code> 后缀）</td></tr>
+          <tr><td><code>.script reloadall</code></td><td>热重载所有已加载脚本（已废弃，直接用 <code>reload</code>）</td></tr>
+          <tr><td><code>.script unload &lt;脚本名&gt;</code></td><td>卸载脚本（自动禁用并移除其所有模块）</td></tr>
+          <tr><td><code>.script list</code></td><td>列出所有已加载脚本</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info">
+      <div class="callout-title">提示</div>
+      脚本名 = 文件名去掉 <code>.js</code>。例如 <code>CenterText.js</code> 的脚本名为 <code>CenterText</code>。
+    </div>
 
-      function updateNav() {
-        var scrollY = main.scrollTop;
-        var currentId = '';
-        sections.forEach(function(section) {
-          var rect = section.getBoundingClientRect();
-          var mainRect = main.getBoundingClientRect();
-          var offset = rect.top - mainRect.top - 80;
-          if (offset <= 0) {
-            currentId = section.id;
-          }
+    <!-- ============================================================== -->
+    <!--  createModule                                                   -->
+    <!-- ============================================================== -->
+    <h2 id="createModule">createModule() — 创建脚本模块 <a class="section-link" href="#createModule">#</a></h2>
+
+    <h3 id="cm-syntax">语法</h3>
+    <pre><code><span class="keyword">var</span> mod = <span class="fun">createModule</span>(<span class="string">"模块名"</span>, <span class="type">Category</span>.分类, {
+    onTick:       <span class="keyword">function</span>(e) { <span class="comment">/* ... */</span> },
+    onMotion:     <span class="keyword">function</span>(e) { <span class="comment">/* ... */</span> },
+    onRender2D:   <span class="keyword">function</span>(e) { <span class="comment">/* ... */</span> },
+    onEnable:     <span class="keyword">function</span>()  { <span class="comment">/* ... */</span> },
+    onDisable:    <span class="keyword">function</span>()  { <span class="comment">/* ... */</span> },
+    <span class="comment">// 支持所有 30+ 事件…</span>
+});</code></pre>
+
+    <table>
+      <thead><tr><th>参数</th><th>类型</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code>name</code></td><td>string</td><td>模块名称，显示在 ClickGUI 和 HUD 中</td></tr>
+        <tr><td><code>cat</code></td><td>Category 枚举</td><td>
+          分类：<code>COMBAT</code> / <code>MOVEMENT</code> / <code>PLAYER</code> / <code>RENDER</code> / <code>WORLD</code> / <code>MISC</code>
+        </td></tr>
+        <tr><td><code>hooks</code></td><td>object</td><td>事件回调映射，key 为钩子名，value 为处理函数</td></tr>
+      </tbody>
+    </table>
+
+    <p>返回值是一个 <a href="#ScriptModule"><code>ScriptModule</code></a> 实例，可以直接调用 <code>mod.setKey()</code>、<code>mod.setEnabled()</code> 等方法。</p>
+
+    <h3 id="cm-hooks">事件钩子一览</h3>
+    <p>在 <code>hooks</code> 对象中使用的 key 与事件的对应关系如下。所有事件回调接收一个事件参数 <code>e</code>。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>钩子名</th><th>事件类</th><th>触发时机</th></tr></thead>
+        <tbody>
+          <tr><td><code>onTick</code></td><td>TickEvent</td><td>客户端每 tick（1/20 秒）</td></tr>
+          <tr><td><code>onGameTick</code></td><td>GameTickEvent</td><td>游戏 tick 更新</td></tr>
+          <tr><td><code>onPreTick</code></td><td>PreTickEvent</td><td>tick 前预处理</td></tr>
+          <tr><td><code>onKey</code></td><td>KeyEvent</td><td>按键按下/释放（e.getKeyCode(), e.isPressed()）</td></tr>
+          <tr><td><code>onMotion</code></td><td>MotionEvent</td><td>发送移动包前（可修改位置/旋转）</td></tr>
+          <tr><td><code>onPreMotion</code></td><td>PreMotionEvent</td><td>PreMotion 阶段</td></tr>
+          <tr><td><code>onPostMotion</code></td><td>PostMotionEvent</td><td>PostMotion 阶段</td></tr>
+          <tr><td><code>onRotation</code></td><td>RotationEvent</td><td>旋转计算</td></tr>
+          <tr><td><code>onStrafe</code></td><td>StrafeEvent</td><td>移动方向修正</td></tr>
+          <tr><td><code>onJump</code></td><td>JumpEvent</td><td>跳跃时</td></tr>
+          <tr><td><code>onPacket</code></td><td>PacketEvent</td><td>发送或接收任意包</td></tr>
+          <tr><td><code>onSendPacket</code></td><td>PacketSendEvent</td><td>发包时（可取消）</td></tr>
+          <tr><td><code>onReceivePacket</code></td><td>ReceivePacketEvent</td><td>收包时（可取消）</td></tr>
+          <tr><td><code>onPrePacket</code></td><td>PrePacketEvent</td><td>包发送前预处理</td></tr>
+          <tr><td><code>onChat</code></td><td>ChatEvent</td><td>玩家发送聊天消息（可取消）</td></tr>
+          <tr><td><code>onChatReceive</code></td><td>ChatReceiveEvent</td><td>收到服务器聊天消息（可修改内容）</td></tr>
+          <tr><td><code>onRender2D</code></td><td>Render2DEvent</td><td>2D GUI 渲染（GuiGraphics / PoseStack）</td></tr>
+          <tr><td><code>onGlRender</code></td><td>GlRenderEvent</td><td>3D 渲染（PoseStack）</td></tr>
+          <tr><td><code>onRender</code></td><td>RenderEvent</td><td>通用渲染</td></tr>
+          <tr><td><code>onRenderEntity</code></td><td>RenderEntityEvent</td><td>实体渲染时</td></tr>
+          <tr><td><code>onWorldChange</code></td><td>WorldChangeEvent</td><td>切换世界/服务器</td></tr>
+          <tr><td><code>onDisconnect</code></td><td>DisconnectEvent</td><td>断开连接</td></tr>
+          <tr><td><code>onEntityHurt</code></td><td>EntityHurtEvent</td><td>实体受伤</td></tr>
+          <tr><td><code>onEntityRemove</code></td><td>EntityRemoveEvent</td><td>实体移除</td></tr>
+          <tr><td><code>onSlowdown</code></td><td>SlowdownEvent</td><td>减速效果（可取消）</td></tr>
+          <tr><td><code>onSneak</code></td><td>SneakEvent</td><td>潜行状态变化</td></tr>
+          <tr><td><code>onSprint</code></td><td>SprintEvent</td><td>疾跑状态变化</td></tr>
+          <tr><td><code>onFallFlying</code></td><td>FallFlyingEvent</td><td>鞘翅飞行状态</td></tr>
+          <tr><td><code>onCameraPitch</code></td><td>CameraPitchEvent</td><td>摄像机俯仰角</td></tr>
+          <tr><td><code>onStuckInBlock</code></td><td>StuckInBlockEvent</td><td>卡方块检测</td></tr>
+          <tr><td><code>onHeldItem</code></td><td>UpdateHeldItemEvent</td><td>手持物品槽位变化</td></tr>
+          <tr><td><code>onRayTrace</code></td><td>RayTraceEvent</td><td>射线追踪（可修改目标）</td></tr>
+          <tr><td><code>onModuleToggle</code></td><td>ModuleToggleEvent</td><td>任意模块开关时（<code>e.getModule()</code> / <code>e.isEnabled()</code>）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="cm-advanced">高级用法</h3>
+
+    <h4>绑定快捷键</h4>
+    <pre><code>mod.setKey(<span class="number">295</span>); <span class="comment">// GLFW_F6</span></code></pre>
+    <p>键码为 <strong>GLFW</strong> 键码，不是 Java <code>VK_</code> 码。常用：<code>F6 = 295</code>、<code>RSHIFT = 345</code>。</p>
+
+    <h4>创建设置项</h4>
+    <pre><code><span class="keyword">var</span> speed = <span class="keyword">new</span> <span class="type">NumberSetting</span>(<span class="string">"Speed"</span>, <span class="number">1.0</span>, <span class="number">0.1</span>, <span class="number">10.0</span>, <span class="number">0.1</span>);
+<span class="keyword">var</span> mode  = <span class="keyword">new</span> <span class="type">ModeSetting</span>(<span class="string">"Mode"</span>, <span class="string">"Vanilla"</span>, [<span class="string">"Vanilla"</span>, <span class="string">"Hypixel"</span>]);
+mod.registerSetting(speed);
+mod.registerSetting(mode);
+
+<span class="comment">// 在事件中读取设置</span>
+<span class="keyword">var</span> s = speed.getValue();       <span class="comment">// double</span>
+<span class="keyword">var</span> m = mode.getSelected();     <span class="comment">// string</span></code></pre>
+
+    <h4>直接监听事件（不创建模块）</h4>
+    <pre><code><span class="keyword">var</span> listener = <span class="keyword">new</span> <span class="type">ScriptModule</span>(<span class="string">"__listener"</span>, <span class="type">Category</span>.MISC);
+listener.when(<span class="type">TickEvent</span>, <span class="keyword">function</span>(e) {
+    <span class="keyword">if</span> (mc.player != <span class="keyword">null</span> &amp;&amp; mc.player.tickCount % <span class="number">20</span> === <span class="number">0</span>) {
+        printChat(<span class="string">"§720 ticks passed"</span>);
+    }
+});
+Client.getInstance().getModuleManager().register(listener);</code></pre>
+
+    <!-- ============================================================== -->
+    <!--  事件参考                                                        -->
+    <!-- ============================================================== -->
+    <h2 id="events">事件类型参考 <a class="section-link" href="#events">#</a></h2>
+    <p>预绑定的事件类型可以直接用在 <code>mod.when()</code> 中。以下是所有事件的详细说明。</p>
+
+    <h3 id="ev-game">游戏循环</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
+        <tbody>
+          <tr><td>TickEvent</td><td><code>TickEvent</code></td><td>无额外属性，每帧触发</td></tr>
+          <tr><td>GameTickEvent</td><td><code>GameTickEvent</code></td><td>无额外属性，游戏 tick 时触发</td></tr>
+          <tr><td>PreTickEvent</td><td><code>PreTickEvent</code></td><td><code>e.isPre()</code> — 真假判断</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="ev-motion">移动 & 旋转</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
+        <tbody>
+          <tr><td>KeyEvent</td><td><code>KeyEvent</code></td><td><code>e.getKeyCode()</code> int · <code>e.isPressed()</code> boolean</td></tr>
+          <tr><td>MotionEvent</td><td><code>MotionEvent</code></td><td><code>e.x/y/z</code> double · <code>e.yaw/pitch</code> float · <code>e.onGround</code> boolean · <code>e.pre</code> boolean</td></tr>
+          <tr><td>PreMotionEvent</td><td><code>PreMotionEvent</code></td><td>同 MotionEvent（pre=true）</td></tr>
+          <tr><td>PostMotionEvent</td><td><code>PostMotionEvent</code></td><td>同 MotionEvent（post=true）</td></tr>
+          <tr><td>RotationEvent</td><td><code>RotationEvent</code></td><td><code>e.yaw/pitch</code> float</td></tr>
+          <tr><td>StrafeEvent</td><td><code>StrafeEvent</code></td><td><code>e.forward/strafe</code> float · <code>e.friction</code> float</td></tr>
+          <tr><td>JumpEvent</td><td><code>JumpEvent</code></td><td><code>e.motionY</code> double</td></tr>
+          <tr><td>SlowdownEvent</td><td><code>SlowdownEvent</code></td><td>可取消：<code>e.setCancelled(true)</code></td></tr>
+          <tr><td>SneakEvent</td><td><code>SneakEvent</code></td><td><code>e.isSneaking()</code> boolean</td></tr>
+          <tr><td>SprintEvent</td><td><code>SprintEvent</code></td><td><code>e.isSprinting()</code> boolean</td></tr>
+          <tr><td>FallFlyingEvent</td><td><code>FallFlyingEvent</code></td><td><code>e.isFlying()</code> boolean</td></tr>
+          <tr><td>CameraPitchEvent</td><td><code>CameraPitchEvent</code></td><td><code>e.pitch</code> float</td></tr>
+          <tr><td>StuckInBlockEvent</td><td><code>StuckInBlockEvent</code></td><td><code>e.isStuck()</code> boolean</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="ev-packet">网络包</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
+        <tbody>
+          <tr><td>PacketEvent</td><td><code>PacketEvent</code></td><td><code>e.getPacket()</code> Packet</td></tr>
+          <tr><td>PacketSendEvent</td><td><code>PacketSendEvent</code></td><td><code>e.getPacket()</code> · 可取消</td></tr>
+          <tr><td>ReceivePacketEvent</td><td><code>ReceivePacketEvent</code></td><td><code>e.getPacket()</code> · 可取消</td></tr>
+          <tr><td>PrePacketEvent</td><td><code>PrePacketEvent</code></td><td><code>e.getPacket()</code> · 预处理</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="ev-chat">聊天</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
+        <tbody>
+          <tr><td>ChatEvent</td><td><code>ChatEvent</code></td><td><code>e.getMessage()</code> · <code>e.setMessage()</code> · 可取消</td></tr>
+          <tr><td>ChatReceiveEvent</td><td><code>ChatReceiveEvent</code></td><td><code>e.getMessage()</code> Component · <code>e.setMessage()</code> · 可取消</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="ev-render">渲染</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
+        <tbody>
+          <tr><td>Render2DEvent</td><td><code>Render2DEvent</code></td><td><code>e.poseStack()</code> · <code>e.guiGraphics()</code> · <code>e.partialTick()</code></td></tr>
+          <tr><td>GlRenderEvent</td><td><code>GlRenderEvent</code></td><td><code>e.poseStack()</code> · <code>e.camera()</code> · <code>e.partialTick()</code></td></tr>
+          <tr><td>RenderEvent</td><td><code>RenderEvent</code></td><td><code>e.poseStack()</code> · <code>e.partialTick()</code></td></tr>
+          <tr><td>RenderEntityEvent</td><td><code>RenderEntityEvent</code></td><td><code>e.entity()</code> · <code>e.poseStack()</code> · <code>e.partialTick()</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="ev-world">世界 & 实体</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
+        <tbody>
+          <tr><td>WorldChangeEvent</td><td><code>WorldChangeEvent</code></td><td>无额外属性</td></tr>
+          <tr><td>DisconnectEvent</td><td><code>DisconnectEvent</code></td><td>无额外属性</td></tr>
+          <tr><td>EntityHurtEvent</td><td><code>EntityHurtEvent</code></td><td><code>e.entity</code> · <code>e.damageSource</code> · <code>e.damage</code></td></tr>
+          <tr><td>EntityRemoveEvent</td><td><code>EntityRemoveEvent</code></td><td><code>e.entity</code> · <code>e.removeReason</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="ev-other">其他</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>事件</th><th>类名</th><th>关键属性</th></tr></thead>
+        <tbody>
+          <tr><td>UpdateHeldItemEvent</td><td><code>UpdateHeldItemEvent</code></td><td><code>e.oldSlot</code> · <code>e.newSlot</code> · <code>e.itemStack</code></td></tr>
+          <tr><td>RayTraceEvent</td><td><code>RayTraceEvent</code></td><td><code>e.hitResult</code> · 可修改</td></tr>
+          <tr><td>RotationAnimationEvent</td><td><code>RotationAnimationEvent</code></td><td><code>e.yaw/pitch</code> · <code>e.duration</code></td></tr>
+          <tr><td>JumpMarkerEvent</td><td><code>JumpMarkerEvent</code></td><td>跳跃标记事件</td></tr>
+          <tr><td>UseItemRayTraceEvent</td><td><code>UseItemRayTraceEvent</code></td><td>物品使用时的射线追踪</td></tr>
+          <tr><td>ModuleToggleEvent</td><td><code>ModuleToggleEvent</code></td><td><code>e.getModule()</code> Module · <code>e.isEnabled()</code> boolean</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--  预绑定变量                                                      -->
+    <!-- ============================================================== -->
+    <h2 id="prelude">预绑定变量 <a class="section-link" href="#prelude">#</a></h2>
+    <p>脚本引擎已自动注入以下变量，无需 <code>import</code> 或 <code>Java.type()</code>，开箱即用。</p>
+
+    <h3 id="prelude-types">Java 类型</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>变量名</th><th>Java 类</th></tr></thead>
+        <tbody>
+          <tr><td><code>Module</code></td><td><code>client.amadeus.modules.Module</code></td></tr>
+          <tr><td><code>Category</code></td><td><code>client.amadeus.modules.Category</code></td></tr>
+          <tr><td><code>KeyBind</code></td><td><code>client.amadeus.modules.KeyBind</code></td></tr>
+          <tr><td><code>EventTarget</code></td><td><code>client.amadeus.event.EventTarget</code></td></tr>
+          <tr><td><code>Setting</code></td><td><code>client.amadeus.settings.Setting</code></td></tr>
+          <tr><td><code>BooleanSetting</code></td><td><code>client.amadeus.settings.impl.BooleanSetting</code></td></tr>
+          <tr><td><code>NumberSetting</code></td><td><code>client.amadeus.settings.impl.NumberSetting</code></td></tr>
+          <tr><td><code>ModeSetting</code></td><td><code>client.amadeus.settings.impl.ModeSetting</code></td></tr>
+          <tr><td><code>MultiSelectSetting</code></td><td><code>client.amadeus.settings.impl.MultiSelectSetting</code></td></tr>
+          <tr><td><code>ColorSetting</code></td><td><code>client.amadeus.settings.impl.ColorSetting</code></td></tr>
+          <tr><td><code>ScriptModule</code></td><td><code>client.amadeus.script.ScriptModule</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+   <h3 id="prelude-utils">工具类 &amp; 核心类</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>类别</th><th>变量名</th><th>Java 类</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="3">客户端核心</td><td><code>Client</code></td><td><code>client.amadeus.Client</code></td></tr>
+          <tr><td><code>ClientBase</code></td><td><code>client.amadeus.ClientBase</code></td></tr>
+          <tr><td><code>mc</code></td><td><code>Minecraft</code> 实例</td></tr>
+          <tr><td rowspan="5">事件基础设施</td><td><code>Event</code></td><td><code>client.amadeus.event.Event</code></td></tr>
+          <tr><td><code>EventBus</code></td><td><code>client.amadeus.event.EventBus</code></td></tr>
+          <tr><td><code>EventMarker</code></td><td><code>client.amadeus.event.EventMarker</code></td></tr>
+          <tr><td><code>EventPriority</code></td><td><code>client.amadeus.event.EventPriority</code></td></tr>
+          <tr><td><code>EventTarget</code></td><td><code>client.amadeus.event.EventTarget</code></td></tr>
+          <tr><td rowspan="6">管理器</td><td><code>ModuleManager</code></td><td><code>client.amadeus.manager.ModuleManager</code></td></tr>
+          <tr><td><code>ConfigManager</code></td><td><code>client.amadeus.manager.ConfigManager</code></td></tr>
+          <tr><td><code>CommandManager</code></td><td><code>client.amadeus.manager.CommandManager</code></td></tr>
+          <tr><td><code>HudManager</code></td><td><code>client.amadeus.manager.HudManager</code></td></tr>
+          <tr><td><code>LagManager</code></td><td><code>client.amadeus.manager.LagManager</code></td></tr>
+          <tr><td><code>TargetManager</code></td><td><code>client.amadeus.manager.TargetManager</code></td></tr>
+          <tr><td rowspan="2">HUD 基类</td><td><code>HudElement</code></td><td><code>client.amadeus.hud.HudElement</code></td></tr>
+          <tr><td><code>IHudElement</code></td><td><code>client.amadeus.hud.IHudElement</code></td></tr>
+          <tr><td rowspan="4">ASM 工具</td><td><code>Bootstrap</code></td><td><code>client.amadeus.asm.Bootstrap</code></td></tr>
+          <tr><td><code>Invocation</code></td><td><code>client.amadeus.asm.Invocation</code></td></tr>
+          <tr><td><code>Locals</code></td><td><code>client.amadeus.asm.Locals</code></td></tr>
+          <tr><td><code>MethodWrapper</code></td><td><code>client.amadeus.asm.MethodWrapper</code></td></tr>
+          <tr><td rowspan="8">动画工具</td><td><code>AnimatedColor</code></td><td><code>client.amadeus.utils.animation.AnimatedColor</code></td></tr>
+          <tr><td><code>AnimationBuilder</code></td><td><code>client.amadeus.utils.animation.AnimationBuilder</code></td></tr>
+          <tr><td><code>AnimationTimer</code></td><td><code>client.amadeus.utils.animation.AnimationTimer</code></td></tr>
+          <tr><td><code>NamedAnimationTimer</code></td><td><code>client.amadeus.utils.animation.NamedAnimationTimer</code></td></tr>
+          <tr><td><code>SmoothAnimationTimer</code></td><td><code>client.amadeus.utils.animation.SmoothAnimationTimer</code></td></tr>
+          <tr><td><code>SpringAnimation</code></td><td><code>client.amadeus.utils.animation.SpringAnimation</code></td></tr>
+          <tr><td><code>TickTimer</code></td><td><code>client.amadeus.utils.animation.TickTimer</code></td></tr>
+          <tr><td><code>TimerUtil</code></td><td><code>client.amadeus.utils.animation.Timer</code></td></tr>
+          <tr><td rowspan="11">游戏工具</td><td><code>BlockUtil</code></td><td><code>client.amadeus.utils.game.BlockUtil</code></td></tr>
+          <tr><td><code>ChunkUtil</code></td><td><code>client.amadeus.utils.game.ChunkUtil</code></td></tr>
+          <tr><td><code>CpsUtil</code></td><td><code>client.amadeus.utils.game.CpsUtil</code></td></tr>
+          <tr><td><code>EntityUtil</code></td><td><code>client.amadeus.utils.game.EntityUtil</code></td></tr>
+          <tr><td><code>ItemAlertTracker</code></td><td><code>client.amadeus.utils.game.ItemAlertTracker</code></td></tr>
+          <tr><td><code>ItemUtil</code></td><td><code>client.amadeus.utils.game.ItemUtil</code></td></tr>
+          <tr><td><code>MotionSimulator</code></td><td><code>client.amadeus.utils.game.MotionSimulator</code></td></tr>
+          <tr><td><code>MovementUtil</code></td><td><code>client.amadeus.utils.game.MovementUtil</code></td></tr>
+          <tr><td><code>PlayerUtil</code></td><td><code>client.amadeus.utils.game.PlayerUtil</code></td></tr>
+          <tr><td><code>RayTraceUtil</code></td><td><code>client.amadeus.utils.game.RayTraceUtil</code></td></tr>
+          <tr><td><code>RotationUtil</code></td><td><code>client.amadeus.utils.game.RotationUtil</code></td></tr>
+          <tr><td rowspan="10">数学工具</td><td><code>AbstractEasing</code></td><td><code>client.amadeus.utils.math.AbstractEasing</code></td></tr>
+          <tr><td><code>CubicBezier</code></td><td><code>client.amadeus.utils.math.CubicBezier</code></td></tr>
+          <tr><td><code>Easing</code></td><td><code>client.amadeus.utils.math.Easing</code></td></tr>
+          <tr><td><code>EasingPresets</code></td><td><code>client.amadeus.utils.math.EasingPresets</code></td></tr>
+          <tr><td><code>Easings</code></td><td><code>client.amadeus.utils.math.Easings</code></td></tr>
+          <tr><td><code>LerpUtil</code></td><td><code>client.amadeus.utils.math.LerpUtil</code></td></tr>
+          <tr><td><code>MathUtil</code></td><td><code>client.amadeus.utils.math.MathUtil</code></td></tr>
+          <tr><td><code>Point2d</code></td><td><code>client.amadeus.utils.math.Point2d</code></td></tr>
+          <tr><td><code>Vec3d</code></td><td><code>client.amadeus.utils.math.Vec3d</code></td></tr>
+          <tr><td><code>Vector2f</code></td><td><code>client.amadeus.utils.math.Vector2f</code></td></tr>
+          <tr><td rowspan="12">杂项工具</td><td><code>Assets</code></td><td><code>client.amadeus.utils.misc.Assets</code></td></tr>
+          <tr><td><code>ChatUtil</code></td><td><code>client.amadeus.utils.misc.ChatUtil</code></td></tr>
+          <tr><td><code>ComponentUtil</code></td><td><code>client.amadeus.utils.misc.ComponentUtil</code></td></tr>
+          <tr><td><code>CursorUtil</code></td><td><code>client.amadeus.utils.misc.CursorUtil</code></td></tr>
+          <tr><td><code>IOUtil</code></td><td><code>client.amadeus.utils.misc.IOUtil</code></td></tr>
+          <tr><td><code>PacketUtil</code></td><td><code>client.amadeus.utils.misc.PacketUtil</code></td></tr>
+          <tr><td><code>ReflectionUtil</code></td><td><code>client.amadeus.utils.misc.ReflectionUtil</code></td></tr>
+          <tr><td><code>ResourceUtil</code></td><td><code>client.amadeus.utils.misc.ResourceUtil</code></td></tr>
+          <tr><td><code>SoundUtil</code></td><td><code>client.amadeus.utils.misc.SoundUtil</code></td></tr>
+          <tr><td><code>ThreadPool</code></td><td><code>client.amadeus.utils.misc.ThreadPool</code></td></tr>
+          <tr><td><code>Triple</code></td><td><code>client.amadeus.utils.misc.Triple</code></td></tr>
+          <tr><td><code>UnsafeUtil</code></td><td><code>client.amadeus.utils.misc.UnsafeUtil</code></td></tr>
+          <tr><td rowspan="6">渲染工具</td><td><code>ColorUtil</code></td><td><code>client.amadeus.utils.render.ColorUtil</code></td></tr>
+          <tr><td><code>ProjectionUtil</code></td><td><code>client.amadeus.utils.render.ProjectionUtil</code></td></tr>
+          <tr><td><code>RenderEntityUtil</code></td><td><code>client.amadeus.utils.render.EntityUtil</code></td></tr>
+          <tr><td><code>RenderHelper</code></td><td><code>client.amadeus.utils.render.RenderHelper</code></td></tr>
+          <tr><td><code>RenderUtil</code></td><td><code>client.amadeus.utils.render.RenderUtil</code></td></tr>
+          <tr><td><code>TextureUtil</code></td><td><code>client.amadeus.utils.render.TextureUtil</code></td></tr>
+          <tr><td rowspan="2">旋转工具</td><td><code>Rotation</code></td><td><code>client.amadeus.utils.rotation.Rotation</code></td></tr>
+          <tr><td><code>RotationHandler</code></td><td><code>client.amadeus.utils.rotation.RotationHandler</code></td></tr>
+          <tr><td rowspan="2">脚本系统</td><td><code>ScriptModule</code></td><td><code>client.amadeus.script.ScriptModule</code></td></tr>
+          <tr><td><code>ScriptManager</code></td><td><code>client.amadeus.script.ScriptManager</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="prelude-packets">常用网络包（快捷绑定）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>变量名</th><th>Minecraft Packet 类</th></tr></thead>
+        <tbody>
+          <tr><td><code>ServerboundChatPacket</code></td><td><code>net.minecraft.network.protocol.game.ServerboundChatPacket</code></td></tr>
+          <tr><td><code>ServerboundMovePlayerPacket</code></td><td><code>net.minecraft.network.protocol.game.ServerboundMovePlayerPacket</code></td></tr>
+          <tr><td><code>ServerboundPlayerCommandPacket</code></td><td><code>net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket</code></td></tr>
+          <tr><td><code>ServerboundUseItemPacket</code></td><td><code>net.minecraft.network.protocol.game.ServerboundUseItemPacket</code></td></tr>
+          <tr><td><code>ClientboundPlayerPositionPacket</code></td><td><code>net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="prelude-funcs">辅助函数</h3>
+    <table>
+      <thead><tr><th>函数</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code>createModule(name, cat, hooks)</code></td><td>创建脚本模块，自动注册到 ModuleManager，返回 ScriptModule 实例</td></tr>
+        <tr><td><code>printChat(msg)</code></td><td>输出彩色消息到游戏聊天栏（支持 § 颜色码）</td></tr>
+        <tr><td><code>sendPacket(pkt)</code></td><td>快捷发送网络包</td></tr>
+        <tr><td><code>drawRoundedRect(pose, x, y, w, h, r, color)</code></td><td>安全绘制圆角矩形（自动处理 GraalJS 类型问题）</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="prelude-player">玩家访问器 <code>__player</code></h3>
+    <p>由于 Minecraft SRG 混淆，GraalJS 无法直接通过 MCP 命名访问 <code>mc.player.*</code>（如 <code>mc.player.hurtTime</code>）。<br>
+    <code>__player</code> 是 Java 侧编译的 <strong>PlayerAccessor</strong> 包装器，绕过混淆让 JS 脚本安全读写玩家状态。</p>
+    <p>GraalJS 自动将 <code>getXxx()</code> 映射为 <code>obj.xxx</code>、<code>isXxx()</code>（boolean）映射为 <code>obj.xxx</code>，<br>
+    所以 JS 中使用 <strong>属性读写语法</strong>（<code>__player.hurtTime</code>），无需调用 getter。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>JS 语法</th><th>类型</th><th>可写</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><code>__player.hurtTime</code></td><td>number（int）</td><td>只读</td><td>受击动画剩余 tick（0 = 未受击）</td></tr>
+          <tr><td><code>__player.onGround</code></td><td>boolean</td><td>只读</td><td>玩家是否在地面</td></tr>
+          <tr><td><code>__player.motionX</code></td><td>number（double）</td><td>只读</td><td>X 轴速度（击退时突增）</td></tr>
+          <tr><td><code>__player.motionY</code></td><td>number（double）</td><td>只读</td><td>Y 轴速度（击退时向上飙升）</td></tr>
+          <tr><td><code>__player.motionZ</code></td><td>number（double）</td><td>只读</td><td>Z 轴速度</td></tr>
+          <tr><td><code>__player.health</code></td><td>number（float）</td><td>只读</td><td>当前生命值</td></tr>
+          <tr><td><code>__player.sprinting</code></td><td>boolean</td><td>只读</td><td>是否在疾跑</td></tr>
+          <tr><td><code>__player.sneaking</code></td><td>boolean</td><td>只读</td><td>是否在潜行</td></tr>
+          <tr><td><code>__player.jumpFromGround()</code></td><td>void</td><td>—</td><td>地面跳跃（空中调用无效，静默忽略）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">工作原理</div>
+      <p><code>__player</code> 是编译到 JAR 中的 <code>PlayerAccessor</code> 静态内部类实例。<br>
+      它的 getter 方法体内部的 <code>mc.player.hurtTime</code> 等引用在 <code>reobfJar</code> 阶段被自动重映射为 SRG 名，<br>
+      所以运行时能正确找到混淆后的 Minecraft 字段。JS 侧完全无需关心 SRG 问题。</p>
+    </div>
+
+    <h4>示例</h4>
+    <pre><code><span class="comment">// 检测受击 → 地面跳跃抵消击退</span>
+<span class="keyword">if</span> (__player.hurtTime &gt; <span class="number">0</span> &amp;&amp; __player.onGround) {
+    __player.jumpFromGround();
+}
+
+<span class="comment">// 读取速度分量</span>
+<span class="keyword">var</span> speed = Math.sqrt(
+    __player.motionX * __player.motionX +
+    __player.motionZ * __player.motionZ
+);
+
+<span class="comment">// 检测状态</span>
+<span class="keyword">if</span> (__player.sprinting &amp;&amp; !__player.sneaking) {
+    printChat(<span class="string">"疾跑中，未潜行"</span>);
+}</code></pre>
+
+    <!-- ============================================================== -->
+    <!--  ScriptModule 方法                                              -->
+    <!-- ============================================================== -->
+    <h2 id="scriptmodule">ScriptModule 方法 <a class="section-link" href="#scriptmodule">#</a></h2>
+    <p><code>createModule()</code> 返回的 <code>ScriptModule</code> 实例继承自 <code>Module</code>，可用以下方法：</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>方法</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><code>mod.setKey(int glfwKeyCode)</code></td><td>绑定快捷键（GLFW 键码）</td></tr>
+          <tr><td><code>mod.setEnabled(boolean)</code></td><td>切换模块开关状态</td></tr>
+          <tr><td><code>mod.isEnabled()</code></td><td>获取当前状态</td></tr>
+          <tr><td><code>mod.getName() / getCategory()</code></td><td>获取名称和分类</td></tr>
+          <tr><td><code>mod.registerSetting(Setting)</code></td><td>注册设置项</td></tr>
+          <tr><td><code>mod.when(EventClass, handler)</code></td><td>注册事件回调</td></tr>
+          <tr><td><code>mod.onEnabled(Runnable)</code></td><td>模块启用时回调</td></tr>
+          <tr><td><code>mod.onDisabled(Runnable)</code></td><td>模块禁用时回调</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--  完整示例                                                        -->
+    <!-- ============================================================== -->
+    <h2 id="examples">完整示例 <a class="section-link" href="#examples">#</a></h2>
+
+    <h3 id="ex-centertext">CenterText.js — 屏幕中央渲染文字</h3>
+    <pre><code><span class="comment">// 创建渲染类模块</span>
+<span class="keyword">var</span> module = <span class="fun">createModule</span>(<span class="string">"CenterText"</span>, <span class="type">Category</span>.RENDER, {
+    onRender2D: <span class="keyword">function</span>(e) {
+        <span class="keyword">var</span> gui = e.guiGraphics();
+        <span class="keyword">var</span> pose = e.poseStack();
+        <span class="keyword">var</span> sw = mc.getWindow().getGuiScaledWidth();
+        <span class="keyword">var</span> sh = mc.getWindow().getGuiScaledHeight();
+
+        <span class="keyword">var</span> title = <span class="string">"§bLiquidBounce §7× §aScripts"</span>;
+        <span class="keyword">var</span> tw = mc.font.width(title);
+        <span class="keyword">var</span> tx = ((sw - tw) / <span class="number">2</span>) | <span class="number">0</span>;
+        <span class="keyword">var</span> ty = ((sh / <span class="number">2</span> - <span class="number">30</span> - <span class="number">12</span>)) | <span class="number">0</span>;
+
+        <span class="comment">// 安全使用 drawRoundedRect（颜色要加 | 0 转 int）</span>
+        <span class="fun">drawRoundedRect</span>(pose, ((sw - tw - <span class="number">40</span>) / <span class="number">2</span>) | <span class="number">0</span>, ty, tw + <span class="number">40</span>, <span class="number">60</span>, <span class="number">8</span>, <span class="number">0x90000000</span> | <span class="number">0</span>);
+
+        gui.drawString(mc.font, title, tx, ty, -<span class="number">1</span>, <span class="keyword">true</span>); <span class="comment">// 带阴影</span>
+        gui.drawString(mc.font, <span class="string">"脚本系统已就绪"</span>, ((sw - mc.font.width(<span class="string">"脚本系统已就绪"</span>)) / <span class="number">2</span>) | <span class="number">0</span>, ty + <span class="number">16</span>, <span class="number">0xAAAAAA</span>, <span class="keyword">false</span>);
+    }
+});
+module.setKey(<span class="number">295</span>); <span class="comment">// GLFW_F6</span></code></pre>
+
+    <h3 id="ex-chatlog">ChatLog.js — 聊天消息日志记录</h3>
+    <pre><code><span class="keyword">var</span> mod = <span class="fun">createModule</span>(<span class="string">"ChatLog"</span>, <span class="type">Category</span>.MISC, {
+    onChatReceive: <span class="keyword">function</span>(e) {
+        <span class="keyword">var</span> msg = e.getMessage().getString(); <span class="comment">// Component → String</span>
+        java.lang.System.out.println(<span class="string">"[CHAT] "</span> + msg);
+    },
+    onChat: <span class="keyword">function</span>(e) {
+        <span class="comment">// 阻止发送含 "badword" 的消息</span>
+        <span class="keyword">if</span> (e.getMessage().contains(<span class="string">"badword"</span>)) {
+            e.setCancelled(<span class="keyword">true</span>);
+            printChat(<span class="string">"§c消息被拦截！"</span>);
+        }
+    }
+});</code></pre>
+
+    <h3 id="ex-autorp">AutoRespawn.js — 自动旁观/重生</h3>
+    <pre><code><span class="keyword">var</span> mod = <span class="fun">createModule</span>(<span class="string">"AutoRespawn"</span>, <span class="type">Category</span>.PLAYER, {
+    onTick: <span class="keyword">function</span>(e) {
+        <span class="keyword">if</span> (mc.player == <span class="keyword">null</span> || !mc.player.isSpectator()) <span class="keyword">return</span>;
+        <span class="comment">// 按名称搜索方块</span>
+        <span class="keyword">var</span> bed = <span class="type">BlockUtil</span>.findBlock(<span class="number">5</span>, <span class="keyword">function</span>(pos) {
+            <span class="keyword">return</span> mc.level.getBlockState(pos).getBlock().getName().getString().contains(<span class="string">"bed"</span>);
         });
-        navLinks.forEach(function(link) {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === '#' + currentId) {
-            link.classList.add('active');
-          }
-        });
-      }
+        <span class="keyword">if</span> (bed != <span class="keyword">null</span>) {
+            mc.player.connection.send(<span class="keyword">new</span> <span class="type">ServerboundMovePlayerPacket</span>.Pos(bed.getX(), bed.getY() + <span class="number">0.5</span>, bed.getZ(), <span class="keyword">true</span>));
+        }
+    }
+});</code></pre>
 
-      main.addEventListener('scroll', function() {
-        requestAnimationFrame(updateNav);
-      });
+    <!-- ============================================================== -->
+    <!--  注意事项                                                        -->
+    <!-- ============================================================== -->
+    <h2 id="pitfalls">注意事项 <a class="section-link" href="#pitfalls">#</a></h2>
 
-      // 点击导航平滑滚动
-      navLinks.forEach(function(link) {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          var targetId = link.getAttribute('href');
-          if (targetId && targetId.startsWith('#')) {
-            var targetEl = document.querySelector(targetId);
-            if (targetEl) {
-              var mainRect = main.getBoundingClientRect();
-              var elRect = targetEl.getBoundingClientRect();
-              var offset = elRect.top - mainRect.top + main.scrollTop - 20;
-              main.scrollTo({ top: offset, behavior: 'smooth' });
-            }
-          }
-        });
-      });
+    <div class="callout danger">
+      <div class="callout-title">类型陷阱 — 颜色值超出 int 范围</div>
+      <p>JavaScript 中 <code>0x90000000</code> 的值是 2415919104，超出了 Java <code>int</code> 最大值（2147483647），GraalJS 会当 <code>Double</code> 传入，导致 Java 方法重载解析失败。</p>
+      <p><strong>修复：</strong>用 <code>| 0</code> 强制转成 32 位有符号整数：<code>0x90000000 | 0</code>。</p>
+    </div>
 
-      // 初始高亮
-      setTimeout(updateNav, 100);
+    <div class="callout danger">
+      <div class="callout-title">方法重载 — Double 不能转 float</div>
+      <p>JS 的所有 <code>number</code> 类型都是 <code>Double</code>，Java 的方法重载不会自动将 <code>Double</code> 转 <code>float</code>。涉及 <code>RenderUtil.drawRoundedRect()</code> 等重载方法时，用 <code>| 0</code> 确保整数传入。</p>
+    </div>
 
-    })();
-  </script>
+    <div class="callout warn">
+      <div class="callout-title">热重载提示</div>
+      <p><code>.script reload</code> 使用 <strong>脚本名</strong>（不带 <code>.js</code>），如 <code>.script reload CenterText</code>。<br>
+      如果脚本之前没加载过（不在 <code>scripts</code> 目录），先用 <code>.script load</code> 加载。<br>
+      重载会自动恢复该脚本所有模块的启用/禁用状态。</p>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">键码说明</div>
+      <p>客户端使用 <strong>GLFW 键码</strong>（不是 Java <code>VK_</code> 代码）。<br>
+      常用键码：<code>F6 = 295</code>，<code>RSHIFT = 345</code>，<code>LCONTROL = 341</code>，<code>GRAVE = 96</code>。通过 <code>KeyBind</code> 类可查阅完整映射。</p>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">设置项注册后自动显示在 ClickGUI</div>
+      <p>调用 <code>mod.registerSetting(setting)</code> 后，设置会自动出现在 ClickGUI 的该模块设置面板中。支持 Boolean / Number / Mode / MultiSelect / Color 类型。</p>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">预绑定覆盖了所有 client.amadeus.* 类</div>
+      <p>源码中 <code>client.amadeus.*</code> 下的 <strong>所有工具类、事件类、管理器、HUD 基类</strong> 都已预绑定。<br>
+      构建后这些类名会被混淆成随机名，但因为预绑定的 <code>Java.type('...')</code> 字符串也会被 ASM 自动重写，<br>
+      所以 <strong>脚本完全不需要关心混淆后的类名</strong>，直接用预绑定变量名就行。</p>
+      <p>如果需要 <code>java.util.Random</code> 这样的标准库类，依然可以用 <code>var Random = Java.type('java.util.Random');</code>，这些不会被混淆。</p>
+    </div>
+
+    <br>
+    <hr style="border: none; border-top: 1px solid var(--border);">
+    <p style="text-align: center; color: var(--faint); font-size: 12px; padding: 24px 0;">
+      Amadeus Scripting API · 基于 GraalVM GraalJS · 所有 API 以实际游戏内表现为准
+    </p>
+  </div>
+</div>
 
 </body>
 </html>
