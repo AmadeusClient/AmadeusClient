@@ -77,6 +77,7 @@ var mod = createModule("HelloWorld", Category.MISC, {
   }
 });
 mod.setKey(295); // F6
+
 保存后执行 .script reload HelloWorld，按 F6 即可输出消息。
 
 文档
